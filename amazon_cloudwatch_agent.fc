@@ -1,1 +1,9 @@
-/usr/local/bin/mydaemon         --      gen_context(system_u:object_r:mydaemon_exec_t,s0)
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent		--	gen_context(system_u:object_r:amazon_cloudwatch_agent_exec_t,s0)
+
+/opt/aws/amazon-cloudwatch-agent/etc(/.*)?		gen_context(system_u:object_r:amazon_cloudwatch_agent_var_lib_t,s0)
+
+/opt/aws/amazon-cloudwatch-agent/logs(/.*)?		gen_context(system_u:object_r:amazon_cloudwatch_agent_log_t,s0)
+
+/usr/lib/systemd/system/amazon-cloudwatch-agent.service		--	gen_context(system_u:object_r:amazon_cloudwatch_agent_unit_file_t,s0)
+
+/var/run/amazon-cloudwatch-agent(/.*)?		gen_context(system_u:object_r:amazon_cloudwatch_agent_var_run_t,s0)
