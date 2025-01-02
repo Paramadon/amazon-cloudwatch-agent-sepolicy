@@ -25,13 +25,15 @@ systemd_unit_file(amazon_cloudwatch_agent_unit_file_t)
 allow amazon_cloudwatch_agent_t self:fifo_file rw_fifo_file_perms;
 allow amazon_cloudwatch_agent_t self:unix_stream_socket create_stream_socket_perms;
 
+# Network access
+allow amazon_cloudwatch_agent_t self:tcp_socket create_stream_socket_perms;
+corenet_tcp_sendrecv_generic_if(amazon_cloudwatch_agent_t)
+corenet_tcp_sendrecv_generic_node(amazon_cloudwatch_agent_t)
+corenet_tcp_sendrecv_all_ports(amazon_cloudwatch_agent_t)
+
 # Allow reading system statistics
 kernel_read_system_state(amazon_cloudwatch_agent_t)
 kernel_read_network_state(amazon_cloudwatch_agent_t)
-
-# Allow network access
-corenet_tcp_connect_http_port(amazon_cloudwatch_agent_t)
-corenet_tcp_connect_https_port(amazon_cloudwatch_agent_t)
 
 # Allow reading process information
 domain_read_all_domains_state(amazon_cloudwatch_agent_t)
@@ -64,11 +66,3 @@ files_read_etc_files(amazon_cloudwatch_agent_t)
 
 # Allow using the proc filesystem
 kernel_read_proc_symlinks(amazon_cloudwatch_agent_t)
-
-# Allow reading system state
-sysnet_read_config(amazon_cloudwatch_agent_t)
-
-# Allow managing its own temporary files
-files_tmp_filetrans(amazon_cloudwatch_agent_t, amazon_cloudwatch_agent_tmp_t, { dir file })
-manage_dirs_pattern(amazon_cloudwatch_agent_t, amazon_cloudwatch_agent_tmp_t, amazon_cloudwatch_agent_tmp_t)
-manage_files_pattern(amazon_cloudwatch_agent_t, amazon_cloudwatch_agent_tmp_t, amazon_cloudwatch_agent_tmp_t)
