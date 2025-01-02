@@ -33,13 +33,10 @@ corenet_sendrecv_all_client_packets(amazon_cloudwatch_agent_t)
 files_read_etc_files(amazon_cloudwatch_agent_t)
 files_read_usr_files(amazon_cloudwatch_agent_t)
 files_read_var_files(amazon_cloudwatch_agent_t)
-files_manage_generic_logs(amazon_cloudwatch_agent_t)
-files_manage_generic_tmp_files(amazon_cloudwatch_agent_t)
 
 # Allow reading and writing to most directories
-files_read_all_dirs(amazon_cloudwatch_agent_t)
-files_read_all_files(amazon_cloudwatch_agent_t)
-files_read_all_symlinks(amazon_cloudwatch_agent_t)
+allow amazon_cloudwatch_agent_t var_log_t:dir { read write getattr search add_name remove_name };
+allow amazon_cloudwatch_agent_t var_log_t:file { create open read write getattr };
 
 # Allow executing binaries
 corecmd_exec_bin(amazon_cloudwatch_agent_t)
