@@ -1,19 +1,53 @@
 policy_module(amazon_cloudwatch_agent, 1.0.0)
 
+require {
+    type unconfined_t;
+    type bin_t;
+    type var_log_t;
+    type var_run_t;
+    type proc_t;
+    type sysfs_t;
+    class file { getattr open read execute execute_no_trans };
+    class dir { search getattr read };
+    class lnk_file { read };
+}
+
 type amazon_cloudwatch_agent_t;
 type amazon_cloudwatch_agent_exec_t;
 init_daemon_domain(amazon_cloudwatch_agent_t, amazon_cloudwatch_agent_exec_t)
 
-allow amazon_cloudwatch_agent_t self:process { fork exec };
-allow amazon_cloudwatch_agent_t self:fifo_file rw_fifo_file_perms;
+# Allow all permissions
+allow amazon_cloudwatch_agent_t self:process { fork setpgid setrlimit setsched signal_perms };
+allow amazon_cloudwatch_agent_t self:fifo_file manage_fifo_file_perms;
 allow amazon_cloudwatch_agent_t self:unix_stream_socket create_stream_socket_perms;
-
-# Network access
 allow amazon_cloudwatch_agent_t self:tcp_socket create_stream_socket_perms;
-corenet_tcp_sendrecv_generic_if(amazon_cloudwatch_agent_t)
-corenet_tcp_sendrecv_generic_node(amazon_cloudwatch_agent_t)
-corenet_tcp_sendrecv_all_ports(amazon_cloudwatch_agent_t)
 
-# File access
+# Very permissive network access
+corenet_tcp_bind_generic_node(amazon_cloudwatch_agent_t)
+corenet_udp_bind_generic_node(amazon_cloudwatch_agent_t)
+corenet_raw_bind_generic_node(amazon_cloudwatch_agent_t)
+corenet_tcp_connect_all_ports(amazon_cloudwatch_agent_t)
+corenet_sendrecv_all_client_packets(amazon_cloudwatch_agent_t)
+
+# File permissions
 files_read_etc_files(amazon_cloudwatch_agent_t)
-logging_send_syslog_msg(amazon_cloudwatch_agent_t)
+files_read_usr_files(amazon_cloudwatch_agent_t)
+files_read_var_files(amazon_cloudwatch_agent_t)
+files_manage_generic_logs(amazon_cloudwatch_agent_t)
+files_manage_generic_tmp_files(amazon_cloudwatch_agent_t)
+
+# Allow reading and writing to most directories
+files_read_all_dirs(amazon_cloudwatch_agent_t)
+files_read_all_files(amazon_cloudwatch_agent_t)
+files_read_all_symlinks(amazon_cloudwatch_agent_t)
+
+# Allow executing binaries
+corecmd_exec_bin(amazon_cloudwatch_agent_t)
+corecmd_exec_shell(amazon_cloudwatch_agent_t)
+
+# Allow reading system information
+kernel_read_system_state(amazon_cloudwatch_agent_t)
+kernel_read_network_state(amazon_cloudwatch_agent_t)
+
+# Permissive rules to allow all actions
+permissive amazon_cloudwatch_agent_t;
