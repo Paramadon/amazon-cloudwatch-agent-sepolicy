@@ -46,11 +46,11 @@ corenet_sendrecv_all_client_packets(amazon_cloudwatch_agent_t)
 files_read_etc_files(amazon_cloudwatch_agent_t)
 files_read_usr_files(amazon_cloudwatch_agent_t)
 files_read_var_files(amazon_cloudwatch_agent_t)
+files_search_etc(amazon_cloudwatch_agent_t)
 
 # Allow reading and writing to most directories
 allow amazon_cloudwatch_agent_t etc_t:dir search;
 allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
-allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir { read write getattr search add_name remove_name };
 allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file { create open read write getattr unlink };
 
 # Allow executing binaries
@@ -62,7 +62,6 @@ kernel_read_system_state(amazon_cloudwatch_agent_t)
 kernel_read_network_state(amazon_cloudwatch_agent_t)
 
 # New rules based on recent denials
-allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir search;
 allow amazon_cloudwatch_agent_t sysfs_t:file { read open };
 allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file { execute_no_trans append };
 allow amazon_cloudwatch_agent_t cgroup_t:dir search;
@@ -75,6 +74,6 @@ allow amazon_cloudwatch_agent_t self:system module_request;
 allow init_t unconfined_service_t:process siginh;
 allow chkpwd_t user_devpts_t:chr_file { read write };
 allow system_dbusd_t self:capability { dac_override };
-allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir { write remove_name add_name };
-allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file { unlink };
-
+allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir { read write open search getattr add_name remove_name };
+allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file { read open getattr };
+allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir list_dir_perms;
