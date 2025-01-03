@@ -12,13 +12,13 @@ require {
     type init_t;
     type sshd_t;
     type sysctl_net_t;
-    type file_type;
     type lib_t;
     type usr_t;
     type etc_t;
     type unconfined_service_t;
     type chkpwd_t;
     type system_dbusd_t;
+    attribute file_type;
     class file { getattr open read execute execute_no_trans append setattr create unlink };
     class dir { open read write search getattr add_name remove_name setattr list_dir_perms };
     class lnk_file { read getattr };
