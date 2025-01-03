@@ -49,6 +49,11 @@ files_read_etc_files(amazon_cloudwatch_agent_t)
 files_read_usr_files(amazon_cloudwatch_agent_t)
 files_read_var_files(amazon_cloudwatch_agent_t)
 files_search_etc(amazon_cloudwatch_agent_t)
+files_read_all_files(amazon_cloudwatch_agent_t)
+files_read_all_dirs(amazon_cloudwatch_agent_t)
+files_read_all_symlinks(amazon_cloudwatch_agent_t)
+files_exec_all_files(amazon_cloudwatch_agent_t)
+
 
 # Allow reading and writing to most directories
 allow amazon_cloudwatch_agent_t var_log_t:dir { setattr search };
