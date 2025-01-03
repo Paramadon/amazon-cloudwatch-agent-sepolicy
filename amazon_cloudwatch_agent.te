@@ -5,7 +5,6 @@ require {
     type bin_t;
     type var_log_t;
     type var_run_t;
-    type proc_t;
     type sysfs_t;
     type cgroup_t;
     type passwd_file_t;
@@ -18,7 +17,7 @@ require {
     class file { getattr open read execute execute_no_trans append };
     class dir { search getattr read };
     class lnk_file { read };
-    class netlink_route_socket { create bind };
+    class netlink_route_socket { create bind write read nlmsg_read nlmsg_write };
     class process siginh;
     class chr_file { read write };
 }
@@ -66,7 +65,7 @@ allow amazon_cloudwatch_agent_t sysfs_t:file { read open };
 allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file { execute_no_trans append };
 allow amazon_cloudwatch_agent_t cgroup_t:dir search;
 allow amazon_cloudwatch_agent_t passwd_file_t:file { read open };
-allow amazon_cloudwatch_agent_t self:netlink_route_socket { create bind };
+allow amazon_cloudwatch_agent_t self:netlink_route_socket { create bind write read nlmsg_read nlmsg_write };
 
 # Additional rules for other contexts
 allow init_t unconfined_service_t:process siginh;
