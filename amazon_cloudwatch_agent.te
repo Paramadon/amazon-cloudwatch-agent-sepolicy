@@ -11,8 +11,10 @@ require {
     type passwd_file_t;
     type user_devpts_t;
     type init_t;
+    type etc_t;
     type unconfined_service_t;
     type chkpwd_t;
+    type system_dbusd_t;
     class file { getattr open read execute execute_no_trans append };
     class dir { search getattr read };
     class lnk_file { read };
@@ -31,6 +33,7 @@ allow amazon_cloudwatch_agent_t self:fifo_file rw_fifo_file_perms;
 allow amazon_cloudwatch_agent_t self:unix_stream_socket create_stream_socket_perms;
 allow amazon_cloudwatch_agent_t self:tcp_socket create_stream_socket_perms;
 
+
 # Very permissive network access
 corenet_tcp_bind_generic_node(amazon_cloudwatch_agent_t)
 corenet_udp_bind_generic_node(amazon_cloudwatch_agent_t)
@@ -44,8 +47,10 @@ files_read_usr_files(amazon_cloudwatch_agent_t)
 files_read_var_files(amazon_cloudwatch_agent_t)
 
 # Allow reading and writing to most directories
-allow amazon_cloudwatch_agent_t var_log_t:dir { read write getattr search add_name remove_name };
-allow amazon_cloudwatch_agent_t var_log_t:file { create open read write getattr };
+allow amazon_cloudwatch_agent_t etc_t:dir search;
+allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir { read write getattr search add_name remove_name };
+allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file { create open read write getattr unlink };
 
 # Allow executing binaries
 corecmd_exec_bin(amazon_cloudwatch_agent_t)
