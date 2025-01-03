@@ -1,4 +1,4 @@
-policy_module(amazon_cloudwatch_agent, 1.0.1)
+policy_module(amazon_cloudwatch_agent, 1.0.2)
 
 require {
     type unconfined_t;
@@ -18,6 +18,8 @@ require {
     type unconfined_service_t;
     type chkpwd_t;
     type system_dbusd_t;
+    type mail_port_t;
+    type unreserved_port_t;
     attribute file_type;
     class file { getattr open read execute execute_no_trans append setattr create unlink };
     class dir { open read write search getattr add_name remove_name setattr list_dir_perms };
@@ -29,7 +31,8 @@ require {
     class chr_file { read write };
     class fifo_file rw_fifo_file_perms;
     class unix_stream_socket create_stream_socket_perms;
-    class tcp_socket create_stream_socket_perms;
+    class tcp_socket { create_stream_socket_perms name_bind };
+    class udp_socket { create setopt connect getattr write read create_socket_perms };
 }
 
 type amazon_cloudwatch_agent_t;
@@ -41,6 +44,7 @@ allow amazon_cloudwatch_agent_t self:process { fork setpgid signal_perms };
 allow amazon_cloudwatch_agent_t self:fifo_file rw_fifo_file_perms;
 allow amazon_cloudwatch_agent_t self:unix_stream_socket create_stream_socket_perms;
 allow amazon_cloudwatch_agent_t self:tcp_socket create_stream_socket_perms;
+allow amazon_cloudwatch_agent_t self:udp_socket create_socket_perms;
 
 # Very permissive network access
 corenet_tcp_bind_generic_node(amazon_cloudwatch_agent_t)
@@ -100,3 +104,13 @@ allow init_t unconfined_service_t:process siginh;
 allow chkpwd_t user_devpts_t:chr_file { read write };
 allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir { open read write search getattr add_name remove_name setattr list_dir_perms };
 allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file { create open read write getattr unlink execute_no_trans append setattr };
+
+# New rules based on AVC messages
+allow amazon_cloudwatch_agent_t mail_port_t:tcp_socket name_bind;
+allow amazon_cloudwatch_agent_t init_t:dir search;
+allow amazon_cloudwatch_agent_t init_t:file { getattr read open };
+allow amazon_cloudwatch_agent_t self:udp_socket { create setopt connect getattr write read };
+allow amazon_cloudwatch_agent_t unreserved_port_t:tcp_socket name_bind;
+
+# Allow DNS resolution
+sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
