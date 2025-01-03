@@ -51,9 +51,11 @@ files_read_var_files(amazon_cloudwatch_agent_t)
 files_search_etc(amazon_cloudwatch_agent_t)
 
 # Allow reading and writing to most directories
-allow amazon_cloudwatch_agent_t etc_t:dir search;
+allow amazon_cloudwatch_agent_t var_log_t:dir { setattr search };
+allow amazon_cloudwatch_agent_t var_log_t:file { getattr open read write create setattr };
 allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
-allow amazon_cloudwatch_agent_t var_log_t:dir setattr file;
+
+
 allow amazon_cloudwatch_agent_t self:capability { chown fowner };
 allow sshd_t chkpwd_t:process { noatsecure rlimitinh siginh };
 allow system_dbusd_t self:capability dac_override;
