@@ -19,14 +19,17 @@ require {
     type unconfined_service_t;
     type chkpwd_t;
     type system_dbusd_t;
-    class file { getattr open read execute execute_no_trans append setattr };
-    class dir { open read write search getattr add_name remove_name setattr };
+    class file { getattr open read execute execute_no_trans append setattr create unlink };
+    class dir { open read write search getattr add_name remove_name setattr list_dir_perms };
     class lnk_file { read getattr };
-    class netlink_route_socket { create bind write read nlmsg_read nlmsg_write };
-    class process siginh;
+    class netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
+    class process { fork setpgid signal_perms siginh noatsecure rlimitinh };
     class system module_request;
-    class capability { net_admin chown fowner };
+    class capability { net_admin chown fowner dac_override };
     class chr_file { read write };
+    class fifo_file rw_fifo_file_perms;
+    class unix_stream_socket create_stream_socket_perms;
+    class tcp_socket create_stream_socket_perms;
 }
 
 type amazon_cloudwatch_agent_t;
@@ -38,7 +41,6 @@ allow amazon_cloudwatch_agent_t self:process { fork setpgid signal_perms };
 allow amazon_cloudwatch_agent_t self:fifo_file rw_fifo_file_perms;
 allow amazon_cloudwatch_agent_t self:unix_stream_socket create_stream_socket_perms;
 allow amazon_cloudwatch_agent_t self:tcp_socket create_stream_socket_perms;
-
 
 # Very permissive network access
 corenet_tcp_bind_generic_node(amazon_cloudwatch_agent_t)
@@ -67,17 +69,16 @@ allow amazon_cloudwatch_agent_t bin_t:file { read getattr open execute };
 allow amazon_cloudwatch_agent_t lib_t:file { read getattr open execute };
 allow amazon_cloudwatch_agent_t usr_t:file { read getattr open execute };
 
-
 # Allow reading and writing to most directories
-allow amazon_cloudwatch_agent_t var_log_t:dir { setattr search };
-allow amazon_cloudwatch_agent_t var_log_t:file { getattr open read write create setattr };
+allow amazon_cloudwatch_agent_t var_log_t:dir { setattr search open read write getattr add_name remove_name };
+allow amazon_cloudwatch_agent_t var_log_t:file { getattr open read write create setattr unlink };
 allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
 
-
-allow amazon_cloudwatch_agent_t self:capability { chown fowner };
+allow amazon_cloudwatch_agent_t self:capability { chown fowner net_admin };
 allow sshd_t chkpwd_t:process { noatsecure rlimitinh siginh };
 allow system_dbusd_t self:capability dac_override;
 allow amazon_cloudwatch_agent_t sysctl_net_t:dir search;
+allow amazon_cloudwatch_agent_t sysctl_net_t:file { read open getattr };
 
 # Allow executing binaries
 corecmd_exec_bin(amazon_cloudwatch_agent_t)
@@ -92,15 +93,10 @@ allow amazon_cloudwatch_agent_t sysfs_t:file { read open };
 allow amazon_cloudwatch_agent_t cgroup_t:dir search;
 allow amazon_cloudwatch_agent_t passwd_file_t:file { read open };
 allow amazon_cloudwatch_agent_t self:netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
-allow amazon_cloudwatch_agent_t self:capability net_admin;
 allow amazon_cloudwatch_agent_t self:system module_request;
 
 # Additional rules for other contexts
 allow init_t unconfined_service_t:process siginh;
 allow chkpwd_t user_devpts_t:chr_file { read write };
-allow system_dbusd_t self:capability { dac_override };
-allow amazon_cloudwatch_agent_t var_log_t:dir { open read write search getattr add_name remove_name setattr };
-allow amazon_cloudwatch_agent_t var_log_t:file { create open read write getattr unlink setattr };
-allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir { open read write search getattr add_name remove_name setattr };
+allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir { open read write search getattr add_name remove_name setattr list_dir_perms };
 allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file { create open read write getattr unlink execute_no_trans append setattr };
-allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir list_dir_perms;
