@@ -45,6 +45,3 @@ corecmd_exec_shell(amazon_cloudwatch_agent_t)
 # Allow reading system information
 kernel_read_system_state(amazon_cloudwatch_agent_t)
 kernel_read_network_state(amazon_cloudwatch_agent_t)
-
-# Permissive rules to allow all actions
-permissive amazon_cloudwatch_agent_t;
