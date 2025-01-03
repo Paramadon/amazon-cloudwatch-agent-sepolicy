@@ -1,4 +1,4 @@
-policy_module(amazon_cloudwatch_agent, 1.0.0)
+policy_module(amazon_cloudwatch_agent, 1.0.1)
 
 require {
     type unconfined_t;
@@ -7,9 +7,18 @@ require {
     type var_run_t;
     type proc_t;
     type sysfs_t;
-    class file { getattr open read execute execute_no_trans };
+    type cgroup_t;
+    type passwd_file_t;
+    type user_devpts_t;
+    type init_t;
+    type unconfined_service_t;
+    type chkpwd_t;
+    class file { getattr open read execute execute_no_trans append };
     class dir { search getattr read };
     class lnk_file { read };
+    class netlink_route_socket { create bind };
+    class process siginh;
+    class chr_file { read write };
 }
 
 type amazon_cloudwatch_agent_t;
@@ -46,5 +55,16 @@ corecmd_exec_shell(amazon_cloudwatch_agent_t)
 kernel_read_system_state(amazon_cloudwatch_agent_t)
 kernel_read_network_state(amazon_cloudwatch_agent_t)
 
+# New rules based on recent denials
+allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir search;
+allow amazon_cloudwatch_agent_t sysfs_t:file { read open };
+allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file { execute_no_trans append };
+allow amazon_cloudwatch_agent_t cgroup_t:dir search;
+allow amazon_cloudwatch_agent_t passwd_file_t:file { read open };
+allow amazon_cloudwatch_agent_t self:netlink_route_socket { create bind };
+
+# Additional rules for other contexts
+allow init_t unconfined_service_t:process siginh;
+allow chkpwd_t user_devpts_t:chr_file { read write };
+
 # Permissive rules to allow all actions
-permissive amazon_cloudwatch_agent_t;
