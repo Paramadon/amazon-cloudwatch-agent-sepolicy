@@ -10,6 +10,8 @@ require {
     type passwd_file_t;
     type user_devpts_t;
     type init_t;
+    type sshd_t;
+    type sysctl_net_t;
     type etc_t;
     type unconfined_service_t;
     type chkpwd_t;
@@ -53,6 +55,9 @@ allow amazon_cloudwatch_agent_t etc_t:dir search;
 allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t var_log_t:dir setattr file;
 allow amazon_cloudwatch_agent_t self:capability { chown fowner };
+allow sshd_t chkpwd_t:process { noatsecure rlimitinh siginh };
+allow system_dbusd_t self:capability dac_override;
+allow amazon_cloudwatch_agent_t sysctl_net_t:dir search;
 
 # Allow executing binaries
 corecmd_exec_bin(amazon_cloudwatch_agent_t)
