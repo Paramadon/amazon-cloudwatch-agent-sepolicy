@@ -15,7 +15,7 @@ require {
     type chkpwd_t;
     type system_dbusd_t;
     class file { getattr open read execute execute_no_trans append };
-    class dir { open read write search getattr add_name remove_name chown };
+    class dir { open read write search getattr add_name remove_name setattr };
     class lnk_file { read };
     class netlink_route_socket { create bind write read nlmsg_read nlmsg_write };
     class process siginh;
@@ -51,7 +51,7 @@ files_search_etc(amazon_cloudwatch_agent_t)
 # Allow reading and writing to most directories
 allow amazon_cloudwatch_agent_t etc_t:dir search;
 allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
-allow amazon_cloudwatch_agent_t var_log_t:dir chown;
+allow amazon_cloudwatch_agent_t var_log_t:dir setattr;
 allow amazon_cloudwatch_agent_t self:capability { chown fowner };
 
 # Allow executing binaries
