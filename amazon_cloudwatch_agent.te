@@ -15,12 +15,12 @@ require {
     type chkpwd_t;
     type system_dbusd_t;
     class file { getattr open read execute execute_no_trans append };
-    class dir { open read write search getattr add_name remove_name };
+    class dir { open read write search getattr add_name remove_name chown };
     class lnk_file { read };
     class netlink_route_socket { create bind write read nlmsg_read nlmsg_write };
     class process siginh;
     class system module_request;
-    class capability { net_admin };
+    class capability { net_admin chown fowner };
     class chr_file { read write };
 }
 
@@ -51,6 +51,8 @@ files_search_etc(amazon_cloudwatch_agent_t)
 # Allow reading and writing to most directories
 allow amazon_cloudwatch_agent_t etc_t:dir search;
 allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t var_log_t:dir chown;
+allow amazon_cloudwatch_agent_t self:capability { chown fowner };
 
 # Allow executing binaries
 corecmd_exec_bin(amazon_cloudwatch_agent_t)
