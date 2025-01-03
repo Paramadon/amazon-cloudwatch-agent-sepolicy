@@ -12,13 +12,15 @@ require {
     type init_t;
     type sshd_t;
     type sysctl_net_t;
+    type file_type;
+    type exec_type;
     type etc_t;
     type unconfined_service_t;
     type chkpwd_t;
     type system_dbusd_t;
     class file { getattr open read execute execute_no_trans append setattr };
     class dir { open read write search getattr add_name remove_name setattr };
-    class lnk_file { read };
+    class lnk_file { read getattr };
     class netlink_route_socket { create bind write read nlmsg_read nlmsg_write };
     class process siginh;
     class system module_request;
@@ -49,10 +51,9 @@ files_read_etc_files(amazon_cloudwatch_agent_t)
 files_read_usr_files(amazon_cloudwatch_agent_t)
 files_read_var_files(amazon_cloudwatch_agent_t)
 files_search_etc(amazon_cloudwatch_agent_t)
-files_read_all_files(amazon_cloudwatch_agent_t)
-files_read_all_dirs(amazon_cloudwatch_agent_t)
-files_read_all_symlinks(amazon_cloudwatch_agent_t)
-files_exec_all_files(amazon_cloudwatch_agent_t)
+allow amazon_cloudwatch_agent_t { file_type exec_type }:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t { file_type exec_type }:file { read getattr open };
+allow amazon_cloudwatch_agent_t { file_type exec_type }:lnk_file { read getattr };
 
 
 # Allow reading and writing to most directories
