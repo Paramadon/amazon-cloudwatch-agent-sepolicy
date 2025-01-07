@@ -1,4 +1,4 @@
-policy_module(amazon_cloudwatch_agent, 1.0.4)
+policy_module(amazon_cloudwatch_agent, 1.0.5)
 
 require {
     type amazon_cloudwatch_agent_t;
@@ -72,8 +72,8 @@ can_exec(amazon_cloudwatch_agent_t, amazon_cloudwatch_agent_exec_t)
 # Network access
 corenet_tcp_bind_generic_node(amazon_cloudwatch_agent_t)
 corenet_udp_bind_generic_node(amazon_cloudwatch_agent_t)
-corenet_tcp_connect_http_port(amazon_cloudwatch_agent_t)
-corenet_tcp_connect_https_port(amazon_cloudwatch_agent_t)
+corenet_tcp_connect_all_ports(amazon_cloudwatch_agent_t)
+corenet_sendrecv_all_client_packets(amazon_cloudwatch_agent_t)
 
 # System information access (limited)
 kernel_read_system_state(amazon_cloudwatch_agent_t)
@@ -83,7 +83,3 @@ sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
 
 # Logging
 logging_send_syslog_msg(amazon_cloudwatch_agent_t)
-
-# Allow CloudWatch Agent to read and get attributes of tmp filesystem
-allow amazon_cloudwatch_agent_t tmp_t:dir { read open getattr search };
-allow amazon_cloudwatch_agent_t tmp_t:file { read open getattr };
