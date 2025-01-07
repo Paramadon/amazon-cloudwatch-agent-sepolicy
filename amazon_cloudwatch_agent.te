@@ -83,7 +83,6 @@ allow amazon_cloudwatch_agent_t var_log_t:dir { setattr search open read getattr
 allow amazon_cloudwatch_agent_t var_log_t:file { getattr open read setattr };
 allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
 
-allow amazon_cloudwatch_agent_t self:capability { chown fowner net_admin };
 allow sshd_t chkpwd_t:process { noatsecure rlimitinh siginh };
 allow system_dbusd_t self:capability dac_override;
 allow amazon_cloudwatch_agent_t sysctl_net_t:dir search;
