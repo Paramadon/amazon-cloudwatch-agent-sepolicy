@@ -47,6 +47,8 @@ require {
     class unix_stream_socket create_stream_socket_perms;
     class tcp_socket { create_stream_socket_perms name_bind };
     class udp_socket { create setopt connect getattr write read create_socket_perms };
+    class filesystem { getattr };
+
 }
 
 type amazon_cloudwatch_agent_t;
