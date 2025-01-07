@@ -122,6 +122,8 @@ allow amazon_cloudwatch_agent_t tmp_t:file { write create unlink };
 allow amazon_cloudwatch_agent_t random_device_t:chr_file { read open getattr };
 
 allow init_t amazon_cloudwatch_agent_exec_t:file ioctl;
+allow amazon_cloudwatch_agent_t tmp_t:dir { remove_name };
+allow amazon_cloudwatch_agent_t tmp_t:file { map };
 
 
 
