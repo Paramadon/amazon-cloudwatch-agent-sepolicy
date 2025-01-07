@@ -91,7 +91,6 @@ allow amazon_cloudwatch_agent_t sysctl_net_t:file { read open getattr };
 # New rules based on recent denials
 allow amazon_cloudwatch_agent_t sysfs_t:file { read open };
 allow amazon_cloudwatch_agent_t cgroup_t:dir search;
-allow amazon_cloudwatch_agent_t passwd_file_t:file { read open };
 allow amazon_cloudwatch_agent_t self:netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
 
 # Additional rules for other contexts
