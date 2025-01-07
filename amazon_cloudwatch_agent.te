@@ -133,8 +133,3 @@ sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
 
 # Logging
 logging_send_syslog_msg(amazon_cloudwatch_agent_t)
-
-# Allow CloudWatch Agent to read and get attributes of various filesystems
-allow amazon_cloudwatch_agent_t { devpts_t tmp_t systemd_systemctl_exec_t fusefs_t configfs_t nfsd_fs_t efivarfs_t bpf_t mqueue_t pstorefs_t debugfs_t tracefs_t tmpfs_t boot_t }:dir { read open getattr search };
-allow amazon_cloudwatch_agent_t { devpts_t tmp_t systemd_systemctl_exec_t fusefs_t configfs_t nfsd_fs_t efivarfs_t bpf_t mqueue_t pstorefs_t debugfs_t tracefs_t tmpfs_t boot_t }:file { read open getattr };
-allow amazon_cloudwatch_agent_t { devpts_t tmp_t systemd_systemctl_exec_t fusefs_t configfs_t nfsd_fs_t efivarfs_t bpf_t mqueue_t pstorefs_t debugfs_t tracefs_t tmpfs_t boot_t }:filesystem getattr;
