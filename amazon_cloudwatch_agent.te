@@ -130,6 +130,3 @@ allow amazon_cloudwatch_agent_t unreserved_port_t:tcp_socket name_bind;
 
 # Allow DNS resolution
 sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
-
-# Logging
-logging_send_syslog_msg(amazon_cloudwatch_agent_t)
