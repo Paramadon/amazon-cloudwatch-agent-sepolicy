@@ -28,6 +28,7 @@ require {
     type sysctl_net_t;
     type unreserved_port_t;
     type mail_port_t;
+    type hugetlbfs_t;
     attribute file_type;
     attribute device_type;
 
@@ -117,14 +118,6 @@ sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
 # Logging
 logging_send_syslog_msg(amazon_cloudwatch_agent_t)
 
-optional_policy(`
-    gen_require(`
-        type hugetlbfs_t;
-    ')
-    allow amazon_cloudwatch_agent_t hugetlbfs_t:dir { read open getattr search };
-    allow amazon_cloudwatch_agent_t hugetlbfs_t:file { read open getattr };
-    allow amazon_cloudwatch_agent_t hugetlbfs_t:filesystem getattr;
-')
 # Allow CloudWatch Agent to read and get attributes of various filesystems/dirs/files
 allow amazon_cloudwatch_agent_t { devpts_t hugetlbfs_t tmp_t systemd_systemctl_exec_t fusefs_t configfs_t nfsd_fs_t efivarfs_t bpf_t mqueue_t pstorefs_t debugfs_t tracefs_t tmpfs_t boot_t }:dir { read open getattr search };
 allow amazon_cloudwatch_agent_t { devpts_t hugetlbfs_t tmp_t systemd_systemctl_exec_t fusefs_t configfs_t nfsd_fs_t efivarfs_t bpf_t mqueue_t pstorefs_t debugfs_t tracefs_t tmpfs_t boot_t }:file { read open getattr };
