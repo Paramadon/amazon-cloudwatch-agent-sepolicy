@@ -5,8 +5,6 @@ require {
     type bin_t;
     type var_log_t;
     type var_run_t;
-    type sysfs_t;
-    type cgroup_t;
     type passwd_file_t;
     type user_devpts_t;
     type init_t;
