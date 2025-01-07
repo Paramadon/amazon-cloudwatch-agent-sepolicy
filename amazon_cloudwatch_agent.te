@@ -79,9 +79,10 @@ allow amazon_cloudwatch_agent_t lib_t:file { read getattr open execute };
 allow amazon_cloudwatch_agent_t usr_t:file { read getattr open execute };
 
 # Allow reading and writing to most directories
-allow amazon_cloudwatch_agent_t var_log_t:dir { setattr search open read write getattr add_name remove_name };
-allow amazon_cloudwatch_agent_t var_log_t:file { getattr open read write create setattr unlink };
+allow amazon_cloudwatch_agent_t var_log_t:dir { search open read getattr };
+allow amazon_cloudwatch_agent_t var_log_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
+
 
 allow amazon_cloudwatch_agent_t self:capability { chown fowner net_admin };
 allow sshd_t chkpwd_t:process { noatsecure rlimitinh siginh };
