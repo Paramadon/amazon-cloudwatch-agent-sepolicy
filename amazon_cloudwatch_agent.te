@@ -16,6 +16,7 @@ require {
     type usr_t;
     type etc_t;
     type devpts_t;
+    type tmp_t;
     type unconfined_service_t;
     type chkpwd_t;
     type system_dbusd_t;
@@ -117,3 +118,11 @@ allow amazon_cloudwatch_agent_t unreserved_port_t:tcp_socket name_bind;
 
 # Allow DNS resolution
 sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
+
+# Logging
+logging_send_syslog_msg(amazon_cloudwatch_agent_t)
+
+# Allow CloudWatch Agent to read and get attributes of various filesystems
+allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:dir { read open getattr search };
+allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:file { read open getattr };
+allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:filesystem getattr;
