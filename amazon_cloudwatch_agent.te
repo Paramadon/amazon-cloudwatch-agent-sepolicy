@@ -126,7 +126,6 @@ allow amazon_cloudwatch_agent_t tmp_t:dir { remove_name };
 allow amazon_cloudwatch_agent_t tmp_t:file { map };
 
 
-
 # Allow DNS resolution
 sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
 
