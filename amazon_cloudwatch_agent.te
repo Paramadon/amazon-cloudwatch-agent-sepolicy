@@ -1,4 +1,4 @@
-policy_module(amazon_cloudwatch_agent, 1.0.5)
+policy_module(amazon_cloudwatch_agent, 1.0.4)
 
 require {
     type amazon_cloudwatch_agent_t;
@@ -7,24 +7,42 @@ require {
     type var_run_t;
     type proc_t;
     type sysfs_t;
+    type cgroup_t;
     type passwd_file_t;
+    type devpts_t;
     type tmp_t;
+    type systemd_systemctl_exec_t;
+    type fusefs_t;
+    type configfs_t;
+    type nfsd_fs_t;
+    type efivarfs_t;
+    type bpf_t;
+    type mqueue_t;
+    type pstorefs_t;
+    type debugfs_t;
+    type tracefs_t;
+    type device_t;
+    type tmpfs_t;
+    type boot_t;
+    type init_t;
+    type sysctl_net_t;
     type unreserved_port_t;
     type mail_port_t;
     attribute file_type;
     attribute device_type;
 
-    class file { getattr open read };
-    class dir { getattr open read search };
-    class sock_file { getattr open read };
-    class fifo_file { getattr open read };
+    class file { getattr open read write append create unlink execute execute_no_trans setattr };
+    class dir { getattr open read write search add_name remove_name setattr };
+    class sock_file { getattr open read write };
+    class fifo_file { getattr open read write };
     class filesystem getattr;
-    class unix_stream_socket create_stream_socket_perms;
-    class netlink_route_socket { create bind read nlmsg_read getattr };
-    class udp_socket { create connect getattr setopt read };
+    class unix_stream_socket { create_stream_socket_perms connectto };
+    class netlink_route_socket { create bind read write nlmsg_read nlmsg_write getattr };
+    class udp_socket { create connect getattr setopt read write };
     class tcp_socket { create_stream_socket_perms name_bind };
-    class capability { net_admin };
-    class process { fork setpgid };
+    class capability { net_admin chown fowner dac_override };
+    class process { fork setpgid signal_perms siginh noatsecure rlimitinh };
+    class system module_request;
 }
 
 type amazon_cloudwatch_agent_t;
@@ -32,21 +50,21 @@ type amazon_cloudwatch_agent_exec_t;
 init_daemon_domain(amazon_cloudwatch_agent_t, amazon_cloudwatch_agent_exec_t)
 
 # Allow permissions for self
-allow amazon_cloudwatch_agent_t self:process { fork setpgid };
+allow amazon_cloudwatch_agent_t self:process { fork setpgid signal_perms };
 allow amazon_cloudwatch_agent_t self:fifo_file rw_fifo_file_perms;
 allow amazon_cloudwatch_agent_t self:unix_stream_socket create_stream_socket_perms;
 allow amazon_cloudwatch_agent_t self:tcp_socket create_stream_socket_perms;
 allow amazon_cloudwatch_agent_t self:udp_socket create_socket_perms;
-allow amazon_cloudwatch_agent_t self:netlink_route_socket { create bind read nlmsg_read getattr };
-allow amazon_cloudwatch_agent_t self:capability net_admin;
+allow amazon_cloudwatch_agent_t self:netlink_route_socket { create bind read write nlmsg_read nlmsg_write getattr };
+allow amazon_cloudwatch_agent_t self:capability { net_admin chown fowner dac_override };
 
-# File permissions (read-only)
+# File permissions
 allow amazon_cloudwatch_agent_t file_type:dir { getattr open read search };
 allow amazon_cloudwatch_agent_t file_type:file { getattr open read };
 allow amazon_cloudwatch_agent_t file_type:sock_file { getattr open read };
 allow amazon_cloudwatch_agent_t file_type:fifo_file { getattr open read };
 
-# Device permissions (read-only)
+# Device permissions
 allow amazon_cloudwatch_agent_t device_type:dir { getattr open read search };
 allow amazon_cloudwatch_agent_t device_type:file { getattr open read };
 
@@ -60,7 +78,12 @@ allow amazon_cloudwatch_agent_t proc_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t proc_t:dir { getattr open read search };
 allow amazon_cloudwatch_agent_t sysfs_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t sysfs_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t cgroup_t:dir { getattr open read search };
 allow amazon_cloudwatch_agent_t passwd_file_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t init_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t init_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t sysctl_net_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t sysctl_net_t:file { getattr open read };
 
 # Network permissions
 allow amazon_cloudwatch_agent_t unreserved_port_t:tcp_socket name_bind;
@@ -69,17 +92,27 @@ allow amazon_cloudwatch_agent_t mail_port_t:tcp_socket name_bind;
 # Execution permissions
 can_exec(amazon_cloudwatch_agent_t, amazon_cloudwatch_agent_exec_t)
 
+# Additional permissions
+allow amazon_cloudwatch_agent_t self:unix_stream_socket connectto;
+allow amazon_cloudwatch_agent_t self:system module_request;
+
 # Network access
 corenet_tcp_bind_generic_node(amazon_cloudwatch_agent_t)
 corenet_udp_bind_generic_node(amazon_cloudwatch_agent_t)
 corenet_tcp_connect_all_ports(amazon_cloudwatch_agent_t)
 corenet_sendrecv_all_client_packets(amazon_cloudwatch_agent_t)
 
-# System information access (limited)
+# System information access
 kernel_read_system_state(amazon_cloudwatch_agent_t)
+kernel_read_network_state(amazon_cloudwatch_agent_t)
 
 # DNS resolution
 sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
 
 # Logging
 logging_send_syslog_msg(amazon_cloudwatch_agent_t)
+
+# Allow CloudWatch Agent to read and get attributes of various filesystems
+allow amazon_cloudwatch_agent_t { devpts_t tmp_t systemd_systemctl_exec_t fusefs_t configfs_t nfsd_fs_t efivarfs_t bpf_t mqueue_t pstorefs_t debugfs_t tracefs_t tmpfs_t boot_t }:dir { read open getattr search };
+allow amazon_cloudwatch_agent_t { devpts_t tmp_t systemd_systemctl_exec_t fusefs_t configfs_t nfsd_fs_t efivarfs_t bpf_t mqueue_t pstorefs_t debugfs_t tracefs_t tmpfs_t boot_t }:file { read open getattr };
+allow amazon_cloudwatch_agent_t { devpts_t tmp_t systemd_systemctl_exec_t fusefs_t configfs_t nfsd_fs_t efivarfs_t bpf_t mqueue_t pstorefs_t debugfs_t tracefs_t tmpfs_t boot_t }:filesystem getattr;
