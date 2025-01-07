@@ -115,6 +115,14 @@ allow amazon_cloudwatch_agent_t init_t:dir search;
 allow amazon_cloudwatch_agent_t init_t:file { getattr read open };
 allow amazon_cloudwatch_agent_t self:udp_socket { create setopt connect getattr write read };
 allow amazon_cloudwatch_agent_t unreserved_port_t:tcp_socket name_bind;
+allow amazon_cloudwatch_agent_t self:process execmem;
+allow amazon_cloudwatch_agent_t tmp_t:dir { write add_name create unlink };
+allow amazon_cloudwatch_agent_t tmp_t:file { write create unlink };
+allow amazon_cloudwatch_agent_t random_device_t:chr_file { read open getattr };
+
+allow init_t amazon_cloudwatch_agent_exec_t:file ioctl;
+
+
 
 # Allow DNS resolution
 sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
