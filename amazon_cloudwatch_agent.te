@@ -89,10 +89,6 @@ allow system_dbusd_t self:capability dac_override;
 allow amazon_cloudwatch_agent_t sysctl_net_t:dir search;
 allow amazon_cloudwatch_agent_t sysctl_net_t:file { read open getattr };
 
-# Allow executing binaries
-corecmd_exec_bin(amazon_cloudwatch_agent_t)
-corecmd_exec_shell(amazon_cloudwatch_agent_t)
-
 # Allow reading system information
 kernel_read_system_state(amazon_cloudwatch_agent_t)
 kernel_read_network_state(amazon_cloudwatch_agent_t)
