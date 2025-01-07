@@ -22,6 +22,7 @@ require {
     type system_dbusd_t;
     type mail_port_t;
     type unreserved_port_t;
+    type random_device_t, device_t;
     attribute file_type;
     class file { getattr open read execute execute_no_trans append setattr create unlink };
     class dir { open read write search getattr add_name remove_name setattr list_dir_perms };
