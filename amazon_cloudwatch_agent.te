@@ -43,29 +43,6 @@ require {
     class process { fork setpgid signal_perms siginh noatsecure rlimitinh };
     class system module_request;
 }
-attribute file_type;
-attribute device_type;
-typeattribute var_log_t file_type;
-typeattribute proc_t file_type;
-typeattribute sysfs_t file_type;
-typeattribute cgroup_t file_type;
-typeattribute passwd_file_t file_type;
-typeattribute devpts_t file_type;
-typeattribute tmp_t file_type;
-typeattribute systemd_systemctl_exec_t file_type;
-typeattribute fusefs_t file_type;
-typeattribute configfs_t file_type;
-typeattribute nfsd_fs_t file_type;
-typeattribute efivarfs_t file_type;
-typeattribute bpf_t file_type;
-typeattribute mqueue_t file_type;
-typeattribute pstorefs_t file_type;
-typeattribute debugfs_t file_type;
-typeattribute tracefs_t file_type;
-typeattribute tmpfs_t file_type;
-typeattribute boot_t file_type;
-
-typeattribute device_t device_type;
 
 type amazon_cloudwatch_agent_t;
 type amazon_cloudwatch_agent_exec_t;
