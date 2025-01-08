@@ -156,7 +156,21 @@ dev_getattr_all_blk_files(amazon_cloudwatch_agent_t)
 # New file and directory access rules
 files_read_all_files(amazon_cloudwatch_agent_t)
 files_getattr_all_dirs(amazon_cloudwatch_agent_t)
-files_list_all_dirs(amazon_cloudwatch_agent_t)
+
+
+files_list_home(amazon_cloudwatch_agent_t)
+files_list_tmp(amazon_cloudwatch_agent_t)
+files_list_var(amazon_cloudwatch_agent_t)
+
+# If the agent needs to list contents of system directories, add these:
+files_list_etc(amazon_cloudwatch_agent_t)
+files_list_usr(amazon_cloudwatch_agent_t)
+
+# For listing contents of all non-security-sensitive directories:
+files_list_non_security(amazon_cloudwatch_agent_t)
+
+# If the agent needs to list contents of all directories (use with caution):
+files_list_all(amazon_cloudwatch_agent_t)
 
 # New kernel and device access rules
 kernel_read_all_proc(amazon_cloudwatch_agent_t)
