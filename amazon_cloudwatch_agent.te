@@ -129,3 +129,44 @@ allow amazon_cloudwatch_agent_t cgroup_t:dir { read getattr open search };
 allow amazon_cloudwatch_agent_t cgroup_t:file { read getattr open };
 # Allow getattr on all filesystems
 allow amazon_cloudwatch_agent_t fs_t:filesystem getattr;
+
+# Allow reading block devices (for disk statistics)
+allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file { getattr open read };
+
+# Allow reading kernel information
+allow amazon_cloudwatch_agent_t kernel_t:system syslog_read;
+
+
+# Allow reading httpd configuration (if monitoring web servers)
+allow amazon_cloudwatch_agent_t httpd_config_t:file { getattr open read };
+
+# Allow connecting to http ports (for sending metrics)
+allow amazon_cloudwatch_agent_t http_port_t:tcp_socket name_connect;
+
+# Allow reading all log files
+logging_read_all_logs(amazon_cloudwatch_agent_t)
+
+
+
+# Allow reading system state
+kernel_read_system_state(amazon_cloudwatch_agent_t)
+
+# Allow reading network state
+kernel_read_network_state(amazon_cloudwatch_agent_t)
+
+# Allow reading all files (use with caution)
+files_read_all_files(amazon_cloudwatch_agent_t)
+
+
+# Allow getting attributes of all directories
+files_getattr_all_dirs(amazon_cloudwatch_agent_t)
+
+# Allow the agent to get disk information
+storage_raw_read_fixed_disk(amazon_cloudwatch_agent_t)
+
+# Allow the agent to read from /dev nodes
+dev_read_sysfs(amazon_cloudwatch_agent_t)
+dev_read_urand(amazon_cloudwatch_agent_t)
+# Allow the agent to get attributes on all devices
+dev_getattr_all_blk_files(amazon_cloudwatch_agent_t)
+dev_getattr_all_chr_files(amazon_cloudwatch_agent_t)
