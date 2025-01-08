@@ -8,6 +8,15 @@ require {
     type passwd_file_t;
     type user_devpts_t;
     type init_t;
+    type proc_t;
+    type sysfs_t;
+    type cgroup_t;
+    type fs_t;
+    type fixed_disk_device_t;
+    type kernel_t;
+    type unlabeled_t;
+    type httpd_config_t;
+    type http_port_t;
     type sshd_t;
     type sysctl_net_t;
     type lib_t;
@@ -35,7 +44,9 @@ require {
     class tcp_socket { create_stream_socket_perms name_bind };
     class udp_socket { create setopt connect getattr write read create_socket_perms };
     class filesystem { getattr };
-
+    class blk_file { getattr open read };
+    class sock_file { getattr open read write };
+    class tcp_socket { name_connect };
 }
 
 type amazon_cloudwatch_agent_t;
@@ -108,4 +119,13 @@ logging_send_syslog_msg(amazon_cloudwatch_agent_t)
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:dir { read open getattr search };
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:file { read open getattr };
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:filesystem getattr;
-
+allow amazon_cloudwatch_agent_t proc_t:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t proc_t:file { read getattr open };
+# Allow reading sysfs
+allow amazon_cloudwatch_agent_t sysfs_t:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t sysfs_t:file { read getattr open };
+# Allow reading cgroup information
+allow amazon_cloudwatch_agent_t cgroup_t:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t cgroup_t:file { read getattr open };
+# Allow getattr on all filesystems
+allow amazon_cloudwatch_agent_t fs_t:filesystem getattr;
