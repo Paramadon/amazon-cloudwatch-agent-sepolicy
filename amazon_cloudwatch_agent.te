@@ -1,4 +1,4 @@
-policy_module(amazon_cloudwatch_agent, 1.0.2)
+policy_module(amazon_cloudwatch_agent, 1.0.3)
 
 require {
     type unconfined_t;
@@ -35,7 +35,6 @@ require {
     class tcp_socket { create_stream_socket_perms name_bind };
     class udp_socket { create setopt connect getattr write read create_socket_perms };
     class filesystem { getattr };
-
 }
 
 type amazon_cloudwatch_agent_t;
@@ -97,7 +96,6 @@ allow init_t amazon_cloudwatch_agent_exec_t:file ioctl;
 allow amazon_cloudwatch_agent_t tmp_t:dir { remove_name };
 allow amazon_cloudwatch_agent_t tmp_t:file { map };
 
-
 # Allow DNS resolution
 sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
 
@@ -109,4 +107,38 @@ allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:dir { read open getattr searc
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:file { read open getattr };
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:filesystem getattr;
 
+# Additional rules from audit2allow output
+allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir search;
+allow amazon_cloudwatch_agent_t bin_t:file { execute execute_no_trans };
+allow amazon_cloudwatch_agent_t bpf_t:filesystem getattr;
 
+allow amazon_cloudwatch_agent_t cgroup_t:dir search;
+allow amazon_cloudwatch_agent_t cgroup_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t cgroup_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t configfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t debugfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t device_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t dosfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t efivarfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file getattr;
+allow amazon_cloudwatch_agent_t fs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t fusefs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t hugetlbfs_t:filesystem getattr;
+
+allow amazon_cloudwatch_agent_t net_conf_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t net_conf_t:lnk_file read;
+
+allow amazon_cloudwatch_agent_t proc_t:file { open read };
+allow amazon_cloudwatch_agent_t pstore_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t random_device_t:chr_file { getattr open read };
+allow amazon_cloudwatch_agent_t rpc_pipefs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t self:process execmem;
+
+allow amazon_cloudwatch_agent_t self:tcp_socket { connect create setopt };
+allow amazon_cloudwatch_agent_t tmp_t:dir { add_name remove_name write };
+allow amazon_cloudwatch_agent_t tmp_t:file { create map unlink write };
+allow amazon_cloudwatch_agent_t tracefs_t:filesystem getattr;
+
+allow amazon_cloudwatch_agent_t var_log_t:dir setattr;
+
+allow amazon_cloudwatch_agent_t websm_port_t:tcp_socket name_connect;
