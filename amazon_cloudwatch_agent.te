@@ -29,7 +29,19 @@ require {
     type unreserved_port_t;
     type random_device_t, device_t;
     attribute file_type;
-    class file { getattr open read execute execute_no_trans append setattr create unlink };
+
+    type fixed_disk_device_t;
+    type cgroup_t;
+    type pstore_t;
+    type efivarfs_t;
+    type bpf_t;
+    type debugfs_t;
+    type tracefs_t;
+    type hugetlbfs_t;
+    type fusefs_t;
+    type dosfs_t;
+    type rpc_pipefs_t;
+    class file { getattr open read execute execute_no_trans append setattr create unlink map };
     class dir { open read write search getattr add_name remove_name setattr list_dir_perms };
     class lnk_file { read getattr };
     class netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
@@ -41,6 +53,7 @@ require {
     class unix_stream_socket create_stream_socket_perms;
     class tcp_socket { create_stream_socket_perms name_bind };
     class udp_socket { create setopt connect getattr write read create_socket_perms };
+    class blk_file getattr;
     class filesystem { getattr };
 
 }
@@ -118,12 +131,36 @@ allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:filesystem getattr;
 allow amazon_cloudwatch_agent_t sysfs_t:dir { read getattr search };
 
 
-# Allow CloudWatch agent to access tmpfs, ramfs, configfs, and other filesystems
-allow amazon_cloudwatch_agent_t tmpfs_t:filesystem getattr;
-allow amazon_cloudwatch_agent_t ramfs_t:filesystem getattr;
-allow amazon_cloudwatch_agent_t configfs_t:filesystem getattr;
-allow amazon_cloudwatch_agent_t devtmpfs_t:filesystem getattr;
-allow amazon_cloudwatch_agent_t fs_t:filesystem getattr;
 
-# Allow CloudWatch agent to access block devices
-allow amazon_cloudwatch_agent_t blk_file_t:blk_file getattr;
+# New rules to address the denials
+allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file getattr;
+allow amazon_cloudwatch_agent_t device_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t tmpfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t cgroup_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t pstore_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t efivarfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t bpf_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t fs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t debugfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t tracefs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t hugetlbfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t configfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t fusefs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t dosfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t rpc_pipefs_t:filesystem getattr;
+
+# New general filesystem access rules
+fs_getattr_all_fs(amazon_cloudwatch_agent_t)
+dev_getattr_all_blk_files(amazon_cloudwatch_agent_t)
+
+# New file and directory access rules
+files_read_all_files(amazon_cloudwatch_agent_t)
+files_getattr_all_dirs(amazon_cloudwatch_agent_t)
+files_list_all_dirs(amazon_cloudwatch_agent_t)
+
+# New kernel and device access rules
+kernel_read_all_proc(amazon_cloudwatch_agent_t)
+dev_read_sysfs(amazon_cloudwatch_agent_t)
+dev_getattr_all_dev_nodes(amazon_cloudwatch_agent_t)
+kernel_read_system_state(amazon_cloudwatch_agent_t)
+storage_raw_read_fixed_disk(amazon_cloudwatch_agent_t)
