@@ -14,6 +14,15 @@ require {
     type usr_t;
     type etc_t;
     type devpts_t;
+    type tmpfs_t;                     # For tmpfs access (e.g., /dev/shm)
+    type sysfs_t;                     # For sysfs access (e.g., /sys/kernel/debug)
+    type dev_t;                       # For /dev access
+    type boot_t;                      # For boot-related files (e.g., /boot/efi)
+    type fusefs_t;                    # For fuse filesystems (e.g., /sys/fs/fuse/connections)
+    type run_t;                       # For runtime files (e.g., /run/credentials)
+    type var_lib_nfs_t;               # For NFS files (e.g., /var/lib/nfs)
+    type proc_t;                      # For process-related directories (e.g., /proc)
+    type cgroup_t;                    # For cgroup-related files (e.g., /sys/fs/cgroup)
     type tmp_t;
     type unconfined_service_t;
     type chkpwd_t;
@@ -108,3 +117,24 @@ logging_send_syslog_msg(amazon_cloudwatch_agent_t)
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:dir { read open getattr search };
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:file { read open getattr };
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:filesystem getattr;
+
+
+
+allow amazon_cloudwatch_agent_t tmpfs_t:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t tmpfs_t:file { read getattr open };
+allow amazon_cloudwatch_agent_t sysfs_t:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t sysfs_t:file { read getattr open };
+allow amazon_cloudwatch_agent_t dev_t:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t dev_t:file { read getattr open };
+allow amazon_cloudwatch_agent_t boot_t:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t boot_t:file { read getattr open };
+allow amazon_cloudwatch_agent_t var_lib_nfs_t:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t var_lib_nfs_t:file { read getattr open };
+allow amazon_cloudwatch_agent_t fusefs_t:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t fusefs_t:file { read getattr open };
+allow amazon_cloudwatch_agent_t run_t:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t run_t:file { read getattr open };
+allow amazon_cloudwatch_agent_t proc_t:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t proc_t:file { read getattr open };
+allow amazon_cloudwatch_agent_t cgroup_t:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t cgroup_t:file { read getattr open };
