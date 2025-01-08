@@ -56,9 +56,6 @@ corenet_raw_bind_generic_node(amazon_cloudwatch_agent_t)
 corenet_tcp_connect_all_ports(amazon_cloudwatch_agent_t)
 corenet_sendrecv_all_client_packets(amazon_cloudwatch_agent_t)
 
-# File permissions
-files_search_etc(amazon_cloudwatch_agent_t)
-
 # Allow reading all directories
 allow amazon_cloudwatch_agent_t file_type:dir { read getattr open search };
 
