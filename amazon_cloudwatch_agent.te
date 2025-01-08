@@ -70,7 +70,7 @@ allow amazon_cloudwatch_agent_t bin_t:file { read getattr open execute };
 allow amazon_cloudwatch_agent_t lib_t:file { read getattr open execute };
 allow amazon_cloudwatch_agent_t usr_t:file { read getattr open execute };
 
-# Allow reading and writing to most directories
+# Allow reading
 allow amazon_cloudwatch_agent_t var_log_t:dir { setattr search open read getattr };
 allow amazon_cloudwatch_agent_t var_log_t:file { getattr open read setattr };
 allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
@@ -97,7 +97,6 @@ allow amazon_cloudwatch_agent_t self:udp_socket { create setopt connect getattr 
 allow amazon_cloudwatch_agent_t unreserved_port_t:tcp_socket name_bind;
 allow amazon_cloudwatch_agent_t tmp_t:dir { write add_name create unlink };
 allow amazon_cloudwatch_agent_t tmp_t:file { write create unlink };
-allow amazon_cloudwatch_agent_t random_device_t:chr_file { read open getattr };
 
 allow init_t amazon_cloudwatch_agent_exec_t:file ioctl;
 allow amazon_cloudwatch_agent_t tmp_t:dir { remove_name };
