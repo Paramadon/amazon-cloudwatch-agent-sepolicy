@@ -13,6 +13,7 @@ require {
     type lib_t;
     type usr_t;
     type etc_t;
+    type cgroup_t;
     type devpts_t;
     type bpf_t;
     type tmp_t;
