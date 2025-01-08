@@ -57,9 +57,6 @@ corenet_tcp_connect_all_ports(amazon_cloudwatch_agent_t)
 corenet_sendrecv_all_client_packets(amazon_cloudwatch_agent_t)
 
 # File permissions
-files_read_etc_files(amazon_cloudwatch_agent_t)
-files_read_usr_files(amazon_cloudwatch_agent_t)
-files_read_var_files(amazon_cloudwatch_agent_t)
 files_search_etc(amazon_cloudwatch_agent_t)
 
 # Allow reading all directories
