@@ -1,4 +1,4 @@
-policy_module(amazon_cloudwatch_agent, 1.0.2)
+policy_module(amazon_cloudwatch_agent, 1.0.3)
 
 require {
     type unconfined_t;
@@ -20,92 +20,121 @@ require {
     type system_dbusd_t;
     type mail_port_t;
     type unreserved_port_t;
-    type random_device_t, device_t;
+    type random_device_t;
+    type device_t;
+    type bpf_t;
+    type cgroup_t;
+    type configfs_t;
+    type debugfs_t;
+    type dosfs_t;
+    type efivarfs_t;
+    type fixed_disk_device_t;
+    type fs_t;
+    type fusefs_t;
+    type hugetlbfs_t;
+    type net_conf_t;
+    type proc_t;
+    type pstore_t;
+    type rpc_pipefs_t;
+    type tmpfs_t;
+    type tracefs_t;
+    type websm_port_t;
+    type http_port_t;
+    type unlabeled_t;
+    type init_var_run_t;
+    type root_t;
+    type systemd_resolved_var_run_t;
     attribute file_type;
-    class file { getattr open read execute execute_no_trans append setattr create unlink };
+    class file { getattr open read execute execute_no_trans append setattr create unlink map ioctl };
     class dir { open read write search getattr add_name remove_name setattr list_dir_perms };
     class lnk_file { read getattr };
     class netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
-    class process { fork setpgid signal_perms siginh noatsecure rlimitinh };
+    class process { fork setpgid signal_perms siginh noatsecure rlimitinh execmem getsched };
     class system module_request;
     class capability { net_admin chown fowner dac_override };
-    class chr_file { read write };
+    class chr_file { read write getattr open };
     class fifo_file rw_fifo_file_perms;
     class unix_stream_socket create_stream_socket_perms;
-    class tcp_socket { create_stream_socket_perms name_bind };
+    class tcp_socket { create_stream_socket_perms name_bind name_connect connect setopt getopt shutdown };
     class udp_socket { create setopt connect getattr write read create_socket_perms };
-    class filesystem { getattr };
-
+    class blk_file getattr;
+    class filesystem getattr;
+    class fd use;
+    class service { start status stop };
 }
 
 type amazon_cloudwatch_agent_t;
 type amazon_cloudwatch_agent_exec_t;
 init_daemon_domain(amazon_cloudwatch_agent_t, amazon_cloudwatch_agent_exec_t)
 
-# Allow all permissions
-allow amazon_cloudwatch_agent_t self:process { fork setpgid signal_perms };
-allow amazon_cloudwatch_agent_t self:fifo_file rw_fifo_file_perms;
-allow amazon_cloudwatch_agent_t self:unix_stream_socket create_stream_socket_perms;
-allow amazon_cloudwatch_agent_t self:tcp_socket create_stream_socket_perms;
-allow amazon_cloudwatch_agent_t self:udp_socket create_socket_perms;
+# Existing rules...
 
-# Network access
-corenet_tcp_bind_generic_node(amazon_cloudwatch_agent_t)
-corenet_udp_bind_generic_node(amazon_cloudwatch_agent_t)
-corenet_raw_bind_generic_node(amazon_cloudwatch_agent_t)
-corenet_tcp_connect_all_ports(amazon_cloudwatch_agent_t)
-corenet_sendrecv_all_client_packets(amazon_cloudwatch_agent_t)
+# New rules based on audit2allow output
+allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir search;
+allow amazon_cloudwatch_agent_t bin_t:file { execute execute_no_trans };
+allow amazon_cloudwatch_agent_t bpf_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t cgroup_t:dir search;
+allow amazon_cloudwatch_agent_t cgroup_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t cgroup_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t configfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t debugfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t device_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t dosfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t efivarfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file getattr;
+allow amazon_cloudwatch_agent_t fs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t fusefs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t hugetlbfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t net_conf_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t net_conf_t:lnk_file read;
+allow amazon_cloudwatch_agent_t proc_t:file { open read };
+allow amazon_cloudwatch_agent_t pstore_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t random_device_t:chr_file { getattr open read };
+allow amazon_cloudwatch_agent_t rpc_pipefs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t self:process execmem;
+allow amazon_cloudwatch_agent_t self:tcp_socket { connect create setopt };
+allow amazon_cloudwatch_agent_t tmp_t:dir { add_name remove_name write };
+allow amazon_cloudwatch_agent_t tmp_t:file { create map unlink write };
+allow amazon_cloudwatch_agent_t tmpfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t tracefs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t var_log_t:dir setattr;
+allow amazon_cloudwatch_agent_t websm_port_t:tcp_socket name_connect;
 
-# Allow reading all directories
-allow amazon_cloudwatch_agent_t file_type:dir { read getattr open search };
+# Rules for init_t
+allow init_t amazon_cloudwatch_agent_exec_t:dir remove_name;
+allow init_t amazon_cloudwatch_agent_exec_t:file { ioctl unlink };
+allow init_t http_port_t:tcp_socket name_connect;
+allow init_t unlabeled_t:dir add_name;
+allow init_t unlabeled_t:file { create execute execute_no_trans setattr write map };
+allow init_t unlabeled_t:process signal;
 
-# Allow reading all files
-allow amazon_cloudwatch_agent_t file_type:file { read getattr open };
+# Rules for unconfined_t
+allow unconfined_t amazon_cloudwatch_agent_exec_t:service { start status stop };
 
-# Allow reading all symlinks
-allow amazon_cloudwatch_agent_t file_type:lnk_file { read getattr };
-
-# Allow reading
-allow amazon_cloudwatch_agent_t var_log_t:dir { setattr search open read getattr };
-allow amazon_cloudwatch_agent_t var_log_t:file { getattr open read setattr };
-allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
-
-allow sshd_t chkpwd_t:process { noatsecure rlimitinh siginh };
-allow system_dbusd_t self:capability dac_override;
-allow amazon_cloudwatch_agent_t sysctl_net_t:dir search;
-allow amazon_cloudwatch_agent_t sysctl_net_t:file { read open getattr };
-
-# New rules based on recent denials
-allow amazon_cloudwatch_agent_t self:netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
-
-# Additional rules for other contexts
-allow init_t unconfined_service_t:process siginh;
-allow chkpwd_t user_devpts_t:chr_file { read write };
-allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir { open read write search getattr add_name remove_name setattr list_dir_perms };
-allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file { create open read write getattr unlink execute_no_trans append setattr };
-
-# New rules based on AVC messages
-allow amazon_cloudwatch_agent_t mail_port_t:tcp_socket name_bind;
-allow amazon_cloudwatch_agent_t init_t:dir search;
-allow amazon_cloudwatch_agent_t init_t:file { getattr read open };
-allow amazon_cloudwatch_agent_t self:udp_socket { create setopt connect getattr write read };
-allow amazon_cloudwatch_agent_t unreserved_port_t:tcp_socket name_bind;
-allow amazon_cloudwatch_agent_t tmp_t:dir { write add_name create unlink };
-allow amazon_cloudwatch_agent_t tmp_t:file { write create unlink };
-
-allow init_t amazon_cloudwatch_agent_exec_t:file ioctl;
-allow amazon_cloudwatch_agent_t tmp_t:dir { remove_name };
-allow amazon_cloudwatch_agent_t tmp_t:file { map };
-
-
-# Allow DNS resolution
-sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
-
-# Logging
-logging_send_syslog_msg(amazon_cloudwatch_agent_t)
-
-# Allow CloudWatch Agent to read and get attributes of various filesystems
-allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:dir { read open getattr search };
-allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:file { read open getattr };
-allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:filesystem getattr;
-
+# Rules for unlabeled_t
+allow unlabeled_t cgroup_t:dir search;
+allow unlabeled_t cgroup_t:file { getattr open read };
+allow unlabeled_t etc_t:dir search;
+allow unlabeled_t etc_t:file getattr;
+allow unlabeled_t init_t:fd use;
+allow unlabeled_t init_var_run_t:dir search;
+allow unlabeled_t lib_t:file read;
+allow unlabeled_t net_conf_t:file { getattr open read };
+allow unlabeled_t net_conf_t:lnk_file read;
+allow unlabeled_t proc_t:dir search;
+allow unlabeled_t proc_t:file { open read };
+allow unlabeled_t root_t:dir search;
+allow unlabeled_t self:dir { open read remove_name search write };
+allow unlabeled_t self:fifo_file { read write };
+allow unlabeled_t self:file { getattr open read unlink };
+allow unlabeled_t self:process { execmem fork getsched signal };
+allow unlabeled_t self:tcp_socket { connect create getopt read setopt shutdown write };
+allow unlabeled_t self:unix_stream_socket read;
+allow unlabeled_t sysfs_t:dir search;
+allow unlabeled_t systemd_resolved_var_run_t:dir search;
+allow unlabeled_t tmp_t:dir { remove_name search write };
+allow unlabeled_t tmp_t:file unlink;
+allow unlabeled_t usr_t:dir search;
+allow unlabeled_t var_log_t:file append;
+allow unlabeled_t var_run_t:dir search;
+allow unlabeled_t websm_port_t:tcp_socket name_connect;
