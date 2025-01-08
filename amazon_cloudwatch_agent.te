@@ -175,6 +175,18 @@ files_list_all(amazon_cloudwatch_agent_t)
 # New kernel and device access rules
 kernel_read_all_proc(amazon_cloudwatch_agent_t)
 dev_read_sysfs(amazon_cloudwatch_agent_t)
-dev_getattr_all_dev_nodes(amazon_cloudwatch_agent_t)
 kernel_read_system_state(amazon_cloudwatch_agent_t)
 storage_raw_read_fixed_disk(amazon_cloudwatch_agent_t)
+dev_read_sysfs(amazon_cloudwatch_agent_t)
+dev_read_urand(amazon_cloudwatch_agent_t)
+dev_read_rand(amazon_cloudwatch_agent_t)
+
+# If the agent needs to get attributes of block devices:
+dev_getattr_all_blk_files(amazon_cloudwatch_agent_t)
+
+# If the agent needs to get attributes of character devices:
+dev_getattr_all_chr_files(amazon_cloudwatch_agent_t)
+
+# For more general device access (use with caution):
+dev_read_all_dev_nodes(amazon_cloudwatch_agent_t)
+dev_getattr_generic_files(amazon_cloudwatch_agent_t)
