@@ -14,10 +14,6 @@ require {
     type usr_t;
     type etc_t;
     type devpts_t;
-    type run_t;                       # For runtime files (e.g., /run/credentials)
-    type var_lib_nfs_t;               # For NFS files (e.g., /var/lib/nfs)
-    type proc_t;                      # For process-related directories (e.g., /proc)
-    type cgroup_t;                    # For cgroup-related files (e.g., /sys/fs/cgroup)
     type tmp_t;
     type unconfined_service_t;
     type chkpwd_t;
@@ -114,12 +110,3 @@ allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:file { read open getattr };
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:filesystem getattr;
 
 
-
-allow amazon_cloudwatch_agent_t var_lib_nfs_t:dir { read getattr open search };
-allow amazon_cloudwatch_agent_t var_lib_nfs_t:file { read getattr open };
-allow amazon_cloudwatch_agent_t run_t:dir { read getattr open search };
-allow amazon_cloudwatch_agent_t run_t:file { read getattr open };
-allow amazon_cloudwatch_agent_t proc_t:dir { read getattr open search };
-allow amazon_cloudwatch_agent_t proc_t:file { read getattr open };
-allow amazon_cloudwatch_agent_t cgroup_t:dir { read getattr open search };
-allow amazon_cloudwatch_agent_t cgroup_t:file { read getattr open };
