@@ -14,8 +14,6 @@ require {
     type usr_t;
     type etc_t;
     type devpts_t;
-    type tmpfs_t;                     # For tmpfs access (e.g., /dev/shm)
-    type sysfs_t;                     # For sysfs access (e.g., /sys/kernel/debug)
     type boot_t;                      # For boot-related files (e.g., /boot/efi)
     type fusefs_t;                    # For fuse filesystems (e.g., /sys/fs/fuse/connections)
     type run_t;                       # For runtime files (e.g., /run/credentials)
@@ -119,10 +117,6 @@ allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:filesystem getattr;
 
 
 
-allow amazon_cloudwatch_agent_t tmpfs_t:dir { read getattr open search };
-allow amazon_cloudwatch_agent_t tmpfs_t:file { read getattr open };
-allow amazon_cloudwatch_agent_t sysfs_t:dir { read getattr open search };
-allow amazon_cloudwatch_agent_t sysfs_t:file { read getattr open };
 allow amazon_cloudwatch_agent_t boot_t:dir { read getattr open search };
 allow amazon_cloudwatch_agent_t boot_t:file { read getattr open };
 allow amazon_cloudwatch_agent_t var_lib_nfs_t:dir { read getattr open search };
