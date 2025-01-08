@@ -65,11 +65,6 @@ allow amazon_cloudwatch_agent_t file_type:file { read getattr open };
 # Allow reading all symlinks
 allow amazon_cloudwatch_agent_t file_type:lnk_file { read getattr };
 
-# Allow reading executable files
-allow amazon_cloudwatch_agent_t bin_t:file { read getattr open execute };
-allow amazon_cloudwatch_agent_t lib_t:file { read getattr open execute };
-allow amazon_cloudwatch_agent_t usr_t:file { read getattr open execute };
-
 # Allow reading
 allow amazon_cloudwatch_agent_t var_log_t:dir { setattr search open read getattr };
 allow amazon_cloudwatch_agent_t var_log_t:file { getattr open read setattr };
