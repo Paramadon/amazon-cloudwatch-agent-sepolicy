@@ -121,7 +121,6 @@ allow amazon_cloudwatch_agent_t cgroup_t:filesystem getattr;
 allow amazon_cloudwatch_agent_t net_conf_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t net_conf_t:lnk_file read;
 
-allow amazon_cloudwatch_agent_t proc_t:file { open read };
 allow amazon_cloudwatch_agent_t pstore_t:filesystem getattr;
 allow amazon_cloudwatch_agent_t random_device_t:chr_file { getattr open read };
 allow amazon_cloudwatch_agent_t rpc_pipefs_t:filesystem getattr;
