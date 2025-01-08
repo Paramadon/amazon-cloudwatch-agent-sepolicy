@@ -9,18 +9,11 @@ require {
     type user_devpts_t;
     type init_t;
     type sshd_t;
-    type sysfs_t;
     type sysctl_net_t;
     type lib_t;
     type usr_t;
     type etc_t;
     type devpts_t;
-    type tmpfs_t;
-    type ramfs_t;
-    type configfs_t;
-    type devtmpfs_t;
-    type fs_t;
-    type blk_file_t;
     type tmp_t;
     type unconfined_service_t;
     type chkpwd_t;
@@ -115,8 +108,4 @@ logging_send_syslog_msg(amazon_cloudwatch_agent_t)
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:dir { read open getattr search };
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:file { read open getattr };
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:filesystem getattr;
-allow amazon_cloudwatch_agent_t sysfs_t:dir { read getattr search };
-
-
-
 
