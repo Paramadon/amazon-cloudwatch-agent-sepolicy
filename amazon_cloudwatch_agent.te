@@ -108,5 +108,6 @@ logging_send_syslog_msg(amazon_cloudwatch_agent_t)
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:dir { read open getattr search };
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:file { read open getattr };
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:filesystem getattr;
-
+allow amazon_cloudwatch_agent_t sysfs_t:dir { read getattr search };
+allow amazon_cloudwatch_agent_t sysfs_t:file { read getattr };
 
