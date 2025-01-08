@@ -14,6 +14,7 @@ require {
     type usr_t;
     type etc_t;
     type devpts_t;
+    type bpf_t;
     type tmp_t;
     type unconfined_service_t;
     type chkpwd_t;
