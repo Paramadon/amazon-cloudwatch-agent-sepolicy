@@ -188,5 +188,4 @@ dev_getattr_all_blk_files(amazon_cloudwatch_agent_t)
 dev_getattr_all_chr_files(amazon_cloudwatch_agent_t)
 
 # For more general device access (use with caution):
-dev_read_all_dev_nodes(amazon_cloudwatch_agent_t)
 dev_getattr_generic_files(amazon_cloudwatch_agent_t)
