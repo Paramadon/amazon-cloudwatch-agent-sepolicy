@@ -15,6 +15,12 @@ require {
     type usr_t;
     type etc_t;
     type devpts_t;
+    type tmpfs_t;
+    type ramfs_t;
+    type configfs_t;
+    type devtmpfs_t;
+    type fs_t;
+    type blk_file_t;
     type tmp_t;
     type unconfined_service_t;
     type chkpwd_t;
@@ -111,3 +117,13 @@ allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:file { read open getattr };
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:filesystem getattr;
 allow amazon_cloudwatch_agent_t sysfs_t:dir { read getattr search };
 
+
+# Allow CloudWatch agent to access tmpfs, ramfs, configfs, and other filesystems
+allow amazon_cloudwatch_agent_t tmpfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t ramfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t configfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t devtmpfs_t:filesystem getattr;
+allow amazon_cloudwatch_agent_t fs_t:filesystem getattr;
+
+# Allow CloudWatch agent to access block devices
+allow amazon_cloudwatch_agent_t blk_file_t:blk_file getattr;
