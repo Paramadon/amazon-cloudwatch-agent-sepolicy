@@ -117,15 +117,6 @@ allow amazon_cloudwatch_agent_t bpf_t:filesystem getattr;
 allow amazon_cloudwatch_agent_t cgroup_t:dir search;
 allow amazon_cloudwatch_agent_t cgroup_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t cgroup_t:filesystem getattr;
-allow amazon_cloudwatch_agent_t configfs_t:filesystem getattr;
-allow amazon_cloudwatch_agent_t debugfs_t:filesystem getattr;
-allow amazon_cloudwatch_agent_t device_t:filesystem getattr;
-allow amazon_cloudwatch_agent_t dosfs_t:filesystem getattr;
-allow amazon_cloudwatch_agent_t efivarfs_t:filesystem getattr;
-allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file getattr;
-allow amazon_cloudwatch_agent_t fs_t:filesystem getattr;
-allow amazon_cloudwatch_agent_t fusefs_t:filesystem getattr;
-allow amazon_cloudwatch_agent_t hugetlbfs_t:filesystem getattr;
 
 allow amazon_cloudwatch_agent_t net_conf_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t net_conf_t:lnk_file read;
