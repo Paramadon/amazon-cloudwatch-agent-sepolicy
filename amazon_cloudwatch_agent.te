@@ -9,6 +9,7 @@ require {
     type user_devpts_t;
     type init_t;
     type sshd_t;
+    type sysfs_t;
     type sysctl_net_t;
     type lib_t;
     type usr_t;
@@ -109,5 +110,4 @@ allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:dir { read open getattr searc
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:file { read open getattr };
 allow amazon_cloudwatch_agent_t { devpts_t tmp_t }:filesystem getattr;
 allow amazon_cloudwatch_agent_t sysfs_t:dir { read getattr search };
-allow amazon_cloudwatch_agent_t sysfs_t:file { read getattr };
 
