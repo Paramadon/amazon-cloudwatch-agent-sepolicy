@@ -53,12 +53,13 @@ type amazon_cloudwatch_agent_t;
 type amazon_cloudwatch_agent_exec_t;
 init_daemon_domain(amazon_cloudwatch_agent_t, amazon_cloudwatch_agent_exec_t)
 
-# Allow all permissions
 allow amazon_cloudwatch_agent_t self:process { fork setpgid signal_perms };
 allow amazon_cloudwatch_agent_t self:fifo_file rw_fifo_file_perms;
 allow amazon_cloudwatch_agent_t self:unix_stream_socket create_stream_socket_perms;
 allow amazon_cloudwatch_agent_t self:tcp_socket create_stream_socket_perms;
 allow amazon_cloudwatch_agent_t self:udp_socket create_socket_perms;
+allow amazon_cloudwatch_agent_t self:udp_socket { connect send_msg };
+allow amazon_cloudwatch_agent_t unreserved_port_t:udp_socket name_bind;
 
 # Network access
 corenet_tcp_bind_generic_node(amazon_cloudwatch_agent_t)
@@ -85,8 +86,6 @@ allow sshd_t chkpwd_t:process { noatsecure rlimitinh siginh };
 allow system_dbusd_t self:capability dac_override;
 allow amazon_cloudwatch_agent_t sysctl_net_t:dir search;
 allow amazon_cloudwatch_agent_t sysctl_net_t:file { read open getattr };
-
-# New rules based on recent denials
 allow amazon_cloudwatch_agent_t self:netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
 
 # Additional rules for other contexts
@@ -136,7 +135,6 @@ allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file { getattr open read
 # Allow reading kernel information
 allow amazon_cloudwatch_agent_t kernel_t:system syslog_read;
 
-
 # Allow reading httpd configuration (if monitoring web servers)
 allow amazon_cloudwatch_agent_t httpd_config_t:file { getattr open read };
 
@@ -145,8 +143,6 @@ allow amazon_cloudwatch_agent_t http_port_t:tcp_socket name_connect;
 
 # Allow reading all log files
 logging_read_all_logs(amazon_cloudwatch_agent_t)
-
-
 
 # Allow reading system state
 kernel_read_system_state(amazon_cloudwatch_agent_t)
@@ -157,7 +153,6 @@ kernel_read_network_state(amazon_cloudwatch_agent_t)
 # Allow reading all files (use with caution)
 files_read_all_files(amazon_cloudwatch_agent_t)
 
-
 # Allow getting attributes of all directories
 files_getattr_all_dirs(amazon_cloudwatch_agent_t)
 
@@ -167,6 +162,7 @@ storage_raw_read_fixed_disk(amazon_cloudwatch_agent_t)
 # Allow the agent to read from /dev nodes
 dev_read_sysfs(amazon_cloudwatch_agent_t)
 dev_read_urand(amazon_cloudwatch_agent_t)
+
 # Allow the agent to get attributes on all devices
 dev_getattr_all_blk_files(amazon_cloudwatch_agent_t)
 dev_getattr_all_chr_files(amazon_cloudwatch_agent_t)
