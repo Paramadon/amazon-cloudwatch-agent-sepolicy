@@ -61,6 +61,73 @@ allow amazon_cloudwatch_agent_t self:udp_socket create_socket_perms;
 allow amazon_cloudwatch_agent_t self:udp_socket { connect send_msg };
 allow amazon_cloudwatch_agent_t unreserved_port_t:udp_socket name_bind;
 
+
+
+#metric value benchmark
+allow amazon_cloudwatch_agent_t auditd_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t auditd_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t auditd_t:lnk_file read;
+
+#!!!! This avc can be allowed using the boolean 'domain_can_mmap_files'
+allow amazon_cloudwatch_agent_t bin_t:file map;
+allow amazon_cloudwatch_agent_t chronyd_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t chronyd_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t chronyd_t:lnk_file read;
+allow amazon_cloudwatch_agent_t crond_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t crond_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t crond_t:lnk_file read;
+allow amazon_cloudwatch_agent_t getty_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t getty_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t getty_t:lnk_file read;
+allow amazon_cloudwatch_agent_t gssproxy_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t gssproxy_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t gssproxy_t:lnk_file read;
+allow amazon_cloudwatch_agent_t init_t:dir read;
+allow amazon_cloudwatch_agent_t init_t:lnk_file read;
+allow amazon_cloudwatch_agent_t irqbalance_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t irqbalance_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t irqbalance_t:lnk_file read;
+allow amazon_cloudwatch_agent_t kernel_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t kernel_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t kernel_t:lnk_file read;
+allow amazon_cloudwatch_agent_t lsmd_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t lsmd_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t lsmd_t:lnk_file read;
+allow amazon_cloudwatch_agent_t rngd_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t rngd_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t rngd_t:lnk_file read;
+allow amazon_cloudwatch_agent_t self:capability { dac_read_search sys_ptrace };
+allow amazon_cloudwatch_agent_t sshd_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t sshd_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t sshd_t:lnk_file read;
+allow amazon_cloudwatch_agent_t syslogd_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t syslogd_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t syslogd_t:lnk_file read;
+allow amazon_cloudwatch_agent_t system_dbusd_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t system_dbusd_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t system_dbusd_t:lnk_file read;
+allow amazon_cloudwatch_agent_t systemd_logind_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t systemd_logind_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t systemd_logind_t:lnk_file read;
+allow amazon_cloudwatch_agent_t systemd_networkd_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t systemd_networkd_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t systemd_networkd_t:lnk_file read;
+allow amazon_cloudwatch_agent_t systemd_resolved_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t systemd_resolved_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t systemd_resolved_t:lnk_file read;
+allow amazon_cloudwatch_agent_t systemd_userdbd_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t systemd_userdbd_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t systemd_userdbd_t:lnk_file read;
+allow amazon_cloudwatch_agent_t udev_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t udev_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t udev_t:lnk_file read;
+allow amazon_cloudwatch_agent_t unconfined_service_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t unconfined_service_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t unconfined_service_t:lnk_file read;
+allow amazon_cloudwatch_agent_t unconfined_t:dir { getattr open read search };
+allow amazon_cloudwatch_agent_t unconfined_t:file { getattr open read };
+allow amazon_cloudwatch_agent_t unconfined_t:lnk_file read;
+
 # Network access
 corenet_tcp_bind_generic_node(amazon_cloudwatch_agent_t)
 corenet_udp_bind_generic_node(amazon_cloudwatch_agent_t)
