@@ -5,7 +5,6 @@ require {
     type bin_t;
     type var_log_t;
     type var_run_t;
-    type passwd_file_t;
     type user_devpts_t;
     type init_t;
     type proc_t;
@@ -144,19 +143,15 @@ allow amazon_cloudwatch_agent_t unconfined_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t unconfined_t:lnk_file read;
 
 # Network access
-corenet_tcp_bind_generic_node(amazon_cloudwatch_agent_t)
-corenet_udp_bind_generic_node(amazon_cloudwatch_agent_t)
-corenet_raw_bind_generic_node(amazon_cloudwatch_agent_t)
-corenet_tcp_connect_all_ports(amazon_cloudwatch_agent_t)
 corenet_sendrecv_all_client_packets(amazon_cloudwatch_agent_t)
 
-# Allow reading all directories
+# Allow reading directories
 allow amazon_cloudwatch_agent_t file_type:dir { read getattr open search };
 
-# Allow reading all files
+# Allow reading files
 allow amazon_cloudwatch_agent_t file_type:file { read getattr open };
 
-# Allow reading all symlinks
+# Allow reading symlinks
 allow amazon_cloudwatch_agent_t file_type:lnk_file { read getattr };
 
 # cloudwatch logs / ca_bundle
@@ -224,7 +219,7 @@ allow amazon_cloudwatch_agent_t httpd_config_t:file { getattr open read };
 # Allow connecting to http ports (for sending metrics)
 allow amazon_cloudwatch_agent_t http_port_t:tcp_socket name_connect;
 
-# Allow reading all log files
+# Allow reading log files
 logging_read_all_logs(amazon_cloudwatch_agent_t)
 
 # Allow reading system state
@@ -233,8 +228,6 @@ kernel_read_system_state(amazon_cloudwatch_agent_t)
 # Allow reading network state
 kernel_read_network_state(amazon_cloudwatch_agent_t)
 
-# Allow reading all files (use with caution)
-files_read_all_files(amazon_cloudwatch_agent_t)
 
 # Allow getting attributes of all directories
 files_getattr_all_dirs(amazon_cloudwatch_agent_t)
