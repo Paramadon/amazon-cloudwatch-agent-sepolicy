@@ -33,6 +33,8 @@ require {
     type usr_t;
     type etc_t;
     type devpts_t;
+    type node_t;
+    type ephemeral_port_t;
     type tmp_t;
     type unconfined_service_t;
     type chkpwd_t;
@@ -75,7 +77,10 @@ allow amazon_cloudwatch_agent_t self:udp_socket create_socket_perms;
 allow amazon_cloudwatch_agent_t self:udp_socket { connect send_msg };
 allow amazon_cloudwatch_agent_t unreserved_port_t:udp_socket name_bind;
 
-
+allow amazon_cloudwatch_agent_t node_t:tcp_socket node_bind;
+allow amazon_cloudwatch_agent_t node_t:udp_socket node_bind;
+allow amazon_cloudwatch_agent_t unreserved_port_t:tcp_socket name_connect;
+allow amazon_cloudwatch_agent_t ephemeral_port_t:tcp_socket name_connect;
 
 #metric value benchmark
 allow amazon_cloudwatch_agent_t auditd_t:dir { getattr open read search };
