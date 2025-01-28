@@ -53,7 +53,7 @@ require {
     class netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
     class process { fork setpgid signal_perms siginh noatsecure rlimitinh };
     class system module_request;
-    class capability { net_admin chown fowner dac_override dac_read_search setgid setuid }; #dac_override is for run_as_user test
+    class capability { net_admin chown fowner dac_override dac_read_search setgid setuid sys_ptrace }; #dac_override is for run_as_user test
     class chr_file { read write };
     class fifo_file rw_fifo_file_perms;
     class unix_stream_socket create_stream_socket_perms;
@@ -164,7 +164,7 @@ allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t user_tmp_t:file unlink;
 
 allow sshd_t chkpwd_t:process { noatsecure rlimitinh siginh };
-allow system_dbusd_t self:capability dac_override;
+allow system_dbusd_t self:capability { dac_override sys_ptrace };
 allow amazon_cloudwatch_agent_t sysctl_net_t:dir search;
 allow amazon_cloudwatch_agent_t sysctl_net_t:file { read open getattr };
 allow amazon_cloudwatch_agent_t self:netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
@@ -218,7 +218,7 @@ allow amazon_cloudwatch_agent_t httpd_config_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t http_port_t:tcp_socket name_connect;
 
 allow amazon_cloudwatch_agent_t var_log_t:dir { add_name write };
-allow amazon_cloudwatch_agent_t var_log_t:file setattr;
+allow amazon_cloudwatch_agent_t var_log_t:file { setattr create };
 
 # Allow reading system state
 kernel_read_system_state(amazon_cloudwatch_agent_t)
