@@ -47,7 +47,7 @@ require {
     type unreserved_port_t;
     type random_device_t, device_t;
     attribute file_type;
-    class file { getattr map open read execute execute_no_trans append setattr create unlink };
+    class file { getattr map open read execute execute_no_trans append setattr create unlink write };
     class dir { open read write search getattr add_name remove_name setattr list_dir_perms };
     class lnk_file { read getattr };
     class netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
@@ -217,8 +217,8 @@ allow amazon_cloudwatch_agent_t httpd_config_t:file { getattr open read };
 # Allow connecting to http ports (for sending metrics)
 allow amazon_cloudwatch_agent_t http_port_t:tcp_socket name_connect;
 
-allow amazon_cloudwatch_agent_t var_log_t:dir { add_name write };
-allow amazon_cloudwatch_agent_t var_log_t:file { setattr create };
+allow amazon_cloudwatch_agent_t var_log_t:dir { add_name write remove_name };
+allow amazon_cloudwatch_agent_t var_log_t:file { setattr create unlink write };
 
 # Allow reading system state
 kernel_read_system_state(amazon_cloudwatch_agent_t)
