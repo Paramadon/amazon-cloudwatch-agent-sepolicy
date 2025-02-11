@@ -53,7 +53,7 @@ require {
     class netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
     class process { fork setpgid signal_perms siginh noatsecure rlimitinh };
     class system module_request;
-    class capability { net_admin chown fowner dac_override dac_read_search setgid setuid sys_ptrace }; #dac_override is for run_as_user test
+    class capability { net_admin chown fowner dac_read_search }; #dac_override is for run_as_user test
     class chr_file { read write };
     class fifo_file rw_fifo_file_perms;
     class unix_stream_socket create_stream_socket_perms;
@@ -115,7 +115,7 @@ allow amazon_cloudwatch_agent_t lsmd_t:lnk_file read;
 allow amazon_cloudwatch_agent_t rngd_t:dir { getattr open read search };
 allow amazon_cloudwatch_agent_t rngd_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t rngd_t:lnk_file read;
-allow amazon_cloudwatch_agent_t self:capability { chown setgid setuid dac_override dac_read_search }; #run_as_user/metric_dimension/restart
+allow amazon_cloudwatch_agent_t self:capability { chown setgid setuid dac_override dac_read_search sys_ptrace }; #run_as_user/metric_dimension/restart
 allow amazon_cloudwatch_agent_t sshd_t:dir { getattr open read search };
 allow amazon_cloudwatch_agent_t sshd_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t sshd_t:lnk_file read;
@@ -148,16 +148,22 @@ allow amazon_cloudwatch_agent_t unconfined_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t unconfined_t:lnk_file read;
 
 # Network access
-corenet_sendrecv_all_client_packets(amazon_cloudwatch_agent_t)
+#corenet_sendrecv_all_client_packets(amazon_cloudwatch_agent_t)
+
 
 # Allow reading directories
-allow amazon_cloudwatch_agent_t file_type:dir { read getattr open search };
+# allow amazon_cloudwatch_agent_t file_type:dir { read getattr open search };
+
+
+allow amazon_cloudwatch_agent_t { var_log_t proc_t sysfs_t }:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t { var_log_t proc_t sysfs_t }:file { read getattr open };
+
 
 # Allow reading files
-allow amazon_cloudwatch_agent_t file_type:file { read getattr open };
+# allow amazon_cloudwatch_agent_t file_type:file { read getattr open };
 
 # Allow reading symlinks
-allow amazon_cloudwatch_agent_t file_type:lnk_file { read getattr };
+# allow amazon_cloudwatch_agent_t file_type:lnk_file { read getattr };
 
 # cloudwatch logs / ca_bundle
 allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
@@ -176,11 +182,14 @@ allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir { open read w
 allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file { create open read write getattr unlink execute_no_trans append setattr };
 
 # New rules based on AVC messages
-allow amazon_cloudwatch_agent_t mail_port_t:tcp_socket { name_bind name_connect };
+#allow amazon_cloudwatch_agent_t mail_port_t:tcp_socket { name_bind name_connect };
 allow amazon_cloudwatch_agent_t init_t:dir search;
 allow amazon_cloudwatch_agent_t init_t:file { getattr read open };
-allow amazon_cloudwatch_agent_t self:udp_socket { create setopt connect getattr write read };
-allow amazon_cloudwatch_agent_t unreserved_port_t:tcp_socket name_bind;
+#allow amazon_cloudwatch_agent_t self:udp_socket { create setopt connect getattr write read };
+#allow amazon_cloudwatch_agent_t unreserved_port_t:tcp_socket name_bind;
+corenet_tcp_sendrecv_http_port(amazon_cloudwatch_agent_t)
+corenet_udp_sendrecv_http_port(amazon_cloudwatch_agent_t)
+
 
 allow init_t amazon_cloudwatch_agent_exec_t:file ioctl;
 
@@ -217,14 +226,14 @@ allow amazon_cloudwatch_agent_t httpd_config_t:file { getattr open read };
 # Allow connecting to http ports (for sending metrics)
 allow amazon_cloudwatch_agent_t http_port_t:tcp_socket name_connect;
 
-allow amazon_cloudwatch_agent_t var_log_t:dir { add_name write remove_name };
-allow amazon_cloudwatch_agent_t var_log_t:file { setattr create unlink write };
+allow amazon_cloudwatch_agent_t var_log_t:dir { add_name write };
+allow amazon_cloudwatch_agent_t var_log_t:file { append open };
 
 # Allow reading system state
-kernel_read_system_state(amazon_cloudwatch_agent_t)
+#kernel_read_system_state(amazon_cloudwatch_agent_t)
 
 # Allow reading network state
-kernel_read_network_state(amazon_cloudwatch_agent_t)
+#kernel_read_network_state(amazon_cloudwatch_agent_t)
 
 
 # Allow getting attributes of all directories
@@ -234,9 +243,13 @@ files_getattr_all_dirs(amazon_cloudwatch_agent_t)
 storage_raw_read_fixed_disk(amazon_cloudwatch_agent_t)
 
 # Allow the agent to read from /dev nodes
-dev_read_sysfs(amazon_cloudwatch_agent_t)
-dev_read_urand(amazon_cloudwatch_agent_t)
+#dev_read_sysfs(amazon_cloudwatch_agent_t)
+
+
+#dev_read_urand(amazon_cloudwatch_agent_t)
 
 # Allow the agent to get attributes on all devices
-dev_getattr_all_blk_files(amazon_cloudwatch_agent_t)
-dev_getattr_all_chr_files(amazon_cloudwatch_agent_t)
+#dev_getattr_all_blk_files(amazon_cloudwatch_agent_t)
+#dev_getattr_all_chr_files(amazon_cloudwatch_agent_t)
+
+allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file { getattr open read}
