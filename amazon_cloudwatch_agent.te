@@ -252,4 +252,4 @@ storage_raw_read_fixed_disk(amazon_cloudwatch_agent_t)
 #dev_getattr_all_blk_files(amazon_cloudwatch_agent_t)
 #dev_getattr_all_chr_files(amazon_cloudwatch_agent_t)
 
-allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file { getattr open read}
+allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file { getattr open read }
