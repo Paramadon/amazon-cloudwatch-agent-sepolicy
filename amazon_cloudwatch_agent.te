@@ -266,7 +266,7 @@ allow amazon_cloudwatch_agent_t shadow_t:file getattr;
 allow amazon_cloudwatch_agent_t user_tmp_t:file open;
 
 
-#metric- dimension:
+#metric- dimension: in this run
 allow amazon_cloudwatch_agent_t proc_net_t:lnk_file read;
 allow amazon_cloudwatch_agent_t sysfs_t:lnk_file read;
 allow amazon_cloudwatch_agent_t udev_var_run_t:file getattr;
