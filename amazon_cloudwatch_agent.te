@@ -57,7 +57,7 @@ require {
     class netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
     class process { fork setpgid signal_perms siginh noatsecure rlimitinh };
     class system module_request;
-    class capability { net_admin chown fowner };
+    class capability { net_admin chown fowner dac_override setgid };
     class chr_file { read write };
     class fifo_file rw_fifo_file_perms;
     class unix_stream_socket create_stream_socket_perms;
@@ -118,7 +118,7 @@ allow amazon_cloudwatch_agent_t lsmd_t:lnk_file read;
 allow amazon_cloudwatch_agent_t rngd_t:dir { getattr open read search };
 allow amazon_cloudwatch_agent_t rngd_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t rngd_t:lnk_file read;
-allow amazon_cloudwatch_agent_t self:capability { chown }; #run_as_user/metric_dimension/restart
+allow amazon_cloudwatch_agent_t self:capability { chown dac_override setgid }; #run_as_user/metric_dimension/restart
 allow amazon_cloudwatch_agent_t sshd_t:dir { getattr open read search };
 allow amazon_cloudwatch_agent_t sshd_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t sshd_t:lnk_file read;
@@ -267,5 +267,6 @@ allow amazon_cloudwatch_agent_t user_tmp_t:file open;
 
 #metric- dimension: in this run
 allow amazon_cloudwatch_agent_t proc_net_t:lnk_file read;
+allow amazon_cloudwatch_agent_t proc_net_t:file read;
 allow amazon_cloudwatch_agent_t sysfs_t:lnk_file read;
 allow amazon_cloudwatch_agent_t udev_var_run_t:file { getattr read };
