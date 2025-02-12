@@ -258,4 +258,4 @@ allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file { getattr open read
 
 
 # https://github.com/aws/amazon-cloudwatch-agent/actions/runs/13290208277/job/37109152155
-allow amazon_cloudwatch_agent_t passwd_file_t:file read;
+allow amazon_cloudwatch_agent_t passwd_file_t:file { read open };
