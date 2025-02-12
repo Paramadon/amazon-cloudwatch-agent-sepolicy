@@ -15,6 +15,7 @@ require {
     type passwd_file_t;
     type fixed_disk_device_t;
     type kernel_t;
+    type shadow_t;
     type crond_t;
     type unlabeled_t;
     type syslogd_t;
@@ -227,7 +228,7 @@ allow amazon_cloudwatch_agent_t httpd_config_t:file { getattr open read };
 # Allow connecting to http ports (for sending metrics)
 allow amazon_cloudwatch_agent_t http_port_t:tcp_socket name_connect;
 
-allow amazon_cloudwatch_agent_t var_log_t:dir { add_name write };
+allow amazon_cloudwatch_agent_t var_log_t:dir { add_name write remove_name };
 allow amazon_cloudwatch_agent_t var_log_t:file { append open setattr };
 
 # Allow reading system state
@@ -255,7 +256,10 @@ storage_raw_read_fixed_disk(amazon_cloudwatch_agent_t)
 
 allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file { getattr open read };
 
-
-
 # https://github.com/aws/amazon-cloudwatch-agent/actions/runs/13290208277/job/37109152155
 allow amazon_cloudwatch_agent_t passwd_file_t:file { read open };
+
+
+#Cloudwatch logs - Error happens when deleting old state file /opt/aws/amazon-cloudwatch-agent/logs/state/_etc_shadow: remove /opt/aws/amazon-cloudwatch-agent/logs/state/_etc_shadow: permission denied
+allow amazon_cloudwatch_agent_t shadow_t:file getattr;
+
