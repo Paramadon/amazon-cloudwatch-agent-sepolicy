@@ -229,7 +229,7 @@ allow amazon_cloudwatch_agent_t httpd_config_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t http_port_t:tcp_socket name_connect;
 
 allow amazon_cloudwatch_agent_t var_log_t:dir { add_name write remove_name };
-allow amazon_cloudwatch_agent_t var_log_t:file { append open setattr create };
+allow amazon_cloudwatch_agent_t var_log_t:file { append open setattr create write };
 
 # Allow reading system state
 #kernel_read_system_state(amazon_cloudwatch_agent_t)
