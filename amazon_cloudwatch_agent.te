@@ -57,7 +57,7 @@ require {
     class netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
     class process { fork setpgid signal_perms siginh noatsecure rlimitinh };
     class system module_request;
-    class capability { net_admin chown fowner dac_read_search }; #dac_override is for run_as_user test
+    class capability { net_admin chown fowner };
     class chr_file { read write };
     class fifo_file rw_fifo_file_perms;
     class unix_stream_socket create_stream_socket_perms;
@@ -118,7 +118,7 @@ allow amazon_cloudwatch_agent_t lsmd_t:lnk_file read;
 allow amazon_cloudwatch_agent_t rngd_t:dir { getattr open read search };
 allow amazon_cloudwatch_agent_t rngd_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t rngd_t:lnk_file read;
-allow amazon_cloudwatch_agent_t self:capability { chown setgid setuid dac_override dac_read_search sys_ptrace }; #run_as_user/metric_dimension/restart
+allow amazon_cloudwatch_agent_t self:capability { chown }; #run_as_user/metric_dimension/restart
 allow amazon_cloudwatch_agent_t sshd_t:dir { getattr open read search };
 allow amazon_cloudwatch_agent_t sshd_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t sshd_t:lnk_file read;
@@ -173,7 +173,6 @@ allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
 allow amazon_cloudwatch_agent_t user_tmp_t:file unlink;
 
 allow sshd_t chkpwd_t:process { noatsecure rlimitinh siginh };
-allow system_dbusd_t self:capability { dac_override sys_ptrace };
 allow amazon_cloudwatch_agent_t sysctl_net_t:dir search;
 allow amazon_cloudwatch_agent_t sysctl_net_t:file { read open getattr };
 allow amazon_cloudwatch_agent_t self:netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
