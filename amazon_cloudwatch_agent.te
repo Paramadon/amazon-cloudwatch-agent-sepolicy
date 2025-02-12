@@ -262,4 +262,4 @@ allow amazon_cloudwatch_agent_t passwd_file_t:file { read open };
 
 #Cloudwatch logs - Error happens when deleting old state file /opt/aws/amazon-cloudwatch-agent/logs/state/_etc_shadow: remove /opt/aws/amazon-cloudwatch-agent/logs/state/_etc_shadow: permission denied
 allow amazon_cloudwatch_agent_t shadow_t:file getattr;
-
+allow amazon_cloudwatch_agent_t user_tmp_t:file open;
