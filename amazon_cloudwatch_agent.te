@@ -1,46 +1,6 @@
 policy_module(amazon_cloudwatch_agent, 1.0.2)
 
-require {
-    type var_log_t;
-    type proc_t;
-    type sysfs_t;
-    type etc_t;
-    type tmp_t;
-    type unreserved_port_t;
-    type http_port_t;
-    type amazon_cloudwatch_agent_exec_t;
-    type init_t;
-    class file { getattr open read write append setattr create };
-    class dir { read getattr open search };
-    class tcp_socket { create_stream_socket_perms name_connect };
-    class udp_socket { create_socket_perms };
-}
+require {}
 
 type amazon_cloudwatch_agent_t;
 init_daemon_domain(amazon_cloudwatch_agent_t, amazon_cloudwatch_agent_exec_t)
-
-# Basic file operations for logging
-allow amazon_cloudwatch_agent_t var_log_t:dir { read getattr open search };
-allow amazon_cloudwatch_agent_t var_log_t:file { getattr open read write append setattr create };
-
-# Read system information
-allow amazon_cloudwatch_agent_t proc_t:dir { read getattr open search };
-allow amazon_cloudwatch_agent_t proc_t:file { read getattr open };
-allow amazon_cloudwatch_agent_t sysfs_t:dir { read getattr open search };
-allow amazon_cloudwatch_agent_t sysfs_t:file { read getattr open };
-
-# Read configuration
-allow amazon_cloudwatch_agent_t etc_t:file { getattr open read };
-
-# Use temporary storage
-allow amazon_cloudwatch_agent_t tmp_t:dir { read getattr open search };
-allow amazon_cloudwatch_agent_t tmp_t:file { read getattr open write };
-
-# Network operations
-allow amazon_cloudwatch_agent_t self:tcp_socket create_stream_socket_perms;
-allow amazon_cloudwatch_agent_t self:udp_socket create_socket_perms;
-allow amazon_cloudwatch_agent_t unreserved_port_t:tcp_socket name_connect;
-allow amazon_cloudwatch_agent_t http_port_t:tcp_socket name_connect;
-
-# Allow the agent to be started by init
-allow init_t amazon_cloudwatch_agent_exec_t:file { getattr execute };
