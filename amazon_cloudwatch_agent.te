@@ -77,13 +77,6 @@ allow amazon_cloudwatch_agent_t self:process { fork setpgid };
 allow amazon_cloudwatch_agent_t self:fifo_file rw_fifo_file_perms;
 allow amazon_cloudwatch_agent_t self:unix_stream_socket create_stream_socket_perms;
 
-# Network access
-#corenet_sendrecv_all_client_packets(amazon_cloudwatch_agent_t)
-
-
-
-
-
 allow init_t amazon_cloudwatch_agent_exec_t:file ioctl;
 
 
