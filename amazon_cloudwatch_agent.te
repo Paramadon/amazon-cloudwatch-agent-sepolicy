@@ -257,7 +257,6 @@ storage_raw_read_fixed_disk(amazon_cloudwatch_agent_t)
 allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file { getattr open read };
 
 # https://github.com/aws/amazon-cloudwatch-agent/actions/runs/13290208277/job/37109152155
-allow amazon_cloudwatch_agent_t passwd_file_t:file { read open getattr };
 
 
 #Cloudwatch logs - Error happens when deleting old state file /opt/aws/amazon-cloudwatch-agent/logs/state/_etc_shadow: remove /opt/aws/amazon-cloudwatch-agent/logs/state/_etc_shadow: permission denied
