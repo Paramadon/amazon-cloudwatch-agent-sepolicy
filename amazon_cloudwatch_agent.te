@@ -1,6 +1,20 @@
 policy_module(amazon_cloudwatch_agent, 1.0.2)
 
-require {}
+require {
+    type amazon_cloudwatch_agent_exec_t;
+    type init_t;
+    class file { getattr open read execute execute_no_trans };
+    class process { transition };
+}
 
 type amazon_cloudwatch_agent_t;
 init_daemon_domain(amazon_cloudwatch_agent_t, amazon_cloudwatch_agent_exec_t)
+
+# Allow init to execute and transition to the agent
+allow init_t amazon_cloudwatch_agent_exec_t:file { getattr open read execute execute_no_trans };
+allow init_t amazon_cloudwatch_agent_t:process transition;
+
+# Basic permissions for the agent to function
+allow amazon_cloudwatch_agent_t self:process { fork sigchld };
+allow amazon_cloudwatch_agent_t self:fifo_file rw_fifo_file_perms;
+allow amazon_cloudwatch_agent_t self:unix_stream_socket create_stream_socket_perms;
