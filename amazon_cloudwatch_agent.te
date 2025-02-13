@@ -186,11 +186,9 @@ allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir { open read w
 allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file { create open read write getattr unlink execute_no_trans append setattr };
 
 # New rules based on AVC messages
-#allow amazon_cloudwatch_agent_t mail_port_t:tcp_socket { name_bind name_connect };
+allow amazon_cloudwatch_agent_t mail_port_t:tcp_socket { name_bind name_connect };
 allow amazon_cloudwatch_agent_t init_t:dir search;
 allow amazon_cloudwatch_agent_t init_t:file { getattr read open };
-#allow amazon_cloudwatch_agent_t self:udp_socket { create setopt connect getattr write read };
-#allow amazon_cloudwatch_agent_t unreserved_port_t:tcp_socket name_bind;
 corenet_tcp_sendrecv_http_port(amazon_cloudwatch_agent_t)
 corenet_udp_sendrecv_http_port(amazon_cloudwatch_agent_t)
 
@@ -269,6 +267,6 @@ allow amazon_cloudwatch_agent_t user_tmp_t:file open;
 
 #metric- dimension: in this run
 allow amazon_cloudwatch_agent_t proc_net_t:lnk_file read;
-allow amazon_cloudwatch_agent_t proc_net_t:file { read open };
+allow amazon_cloudwatch_agent_t proc_net_t:file { read open getattr };
 allow amazon_cloudwatch_agent_t sysfs_t:lnk_file read;
 allow amazon_cloudwatch_agent_t udev_var_run_t:file { getattr read open };
