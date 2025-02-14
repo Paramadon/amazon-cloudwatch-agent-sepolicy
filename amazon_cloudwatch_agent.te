@@ -85,3 +85,9 @@ sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
 
 # Logging
 logging_send_syslog_msg(amazon_cloudwatch_agent_t)
+
+
+allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file execute_no_trans;
+allow amazon_cloudwatch_agent_t sysfs_t:file read;
+allow amazon_cloudwatch_agent_t var_log_t:dir { read write };
+allow amazon_cloudwatch_agent_t var_log_t:file open;
