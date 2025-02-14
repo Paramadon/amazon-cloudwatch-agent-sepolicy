@@ -62,8 +62,8 @@ require {
     class chr_file { read write };
     class fifo_file rw_fifo_file_perms;
     class unix_stream_socket create_stream_socket_perms;
-    class tcp_socket { create_stream_socket_perms name_bind node_bind name_connect };
-    class udp_socket { create setopt connect getattr write read create_socket_perms };
+    class tcp_socket { create_stream_socket_perms name_bind node_bind name_connect accept listen };
+    class udp_socket { create setopt connect getattr write read create_socket_perms node_bind };
     class filesystem { getattr };
     class blk_file { getattr open read };
     class sock_file { getattr open read write };
@@ -87,7 +87,29 @@ sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
 logging_send_syslog_msg(amazon_cloudwatch_agent_t)
 
 
+allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:dir { add_name getattr open read remove_name setattr write };
+
+#!!!! This avc is allowed in the current policy
 allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file execute_no_trans;
+allow amazon_cloudwatch_agent_t amazon_cloudwatch_agent_exec_t:file { create setattr unlink write };
+allow amazon_cloudwatch_agent_t http_port_t:tcp_socket name_connect;
+allow amazon_cloudwatch_agent_t mail_port_t:tcp_socket name_bind;
+allow amazon_cloudwatch_agent_t node_t:tcp_socket node_bind;
+allow amazon_cloudwatch_agent_t node_t:udp_socket node_bind;
+allow amazon_cloudwatch_agent_t passwd_file_t:file { open read };
+allow amazon_cloudwatch_agent_t proc_t:file getattr;
+allow amazon_cloudwatch_agent_t self:tcp_socket { accept listen };
+allow amazon_cloudwatch_agent_t sysctl_net_t:dir search;
+allow amazon_cloudwatch_agent_t sysctl_net_t:file { open read };
+
+#!!!! This avc is allowed in the current policy
 allow amazon_cloudwatch_agent_t sysfs_t:file read;
+allow amazon_cloudwatch_agent_t sysfs_t:file open;
+allow amazon_cloudwatch_agent_t unreserved_port_t:udp_socket name_bind;
+
+#!!!! This avc is allowed in the current policy
 allow amazon_cloudwatch_agent_t var_log_t:dir { read write };
+
+#!!!! This avc is allowed in the current policy
 allow amazon_cloudwatch_agent_t var_log_t:file open;
+allow amazon_cloudwatch_agent_t var_log_t:file setattr;
