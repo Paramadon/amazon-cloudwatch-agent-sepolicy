@@ -19,7 +19,6 @@ require {
     type passwd_file_t;              # Password file for user authentication
     type fixed_disk_device_t;        # Fixed disk device files
     type kernel_t;                   # Kernel-related files
-    type shadow_t;                   # Shadow file for storing encrypted user passwords
     type crond_t;                    # Cron daemon
     type unlabeled_t;                # Unlabeled process or file
     type syslogd_t;                  # Syslog daemon
