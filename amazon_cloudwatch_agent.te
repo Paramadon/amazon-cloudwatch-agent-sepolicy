@@ -11,26 +11,20 @@ require {
     type http_port_t;
     type node_t;
     type unreserved_port_t;
+    type tmp_t;
+    type etc_t;
+    type devpts_t;
     attribute file_type;
-    class file { getattr open read write append create unlink };
-    class dir { search read write add_name remove_name };
-    class lnk_file { read getattr };
-    class sock_file { write };
-    class tcp_socket { create connect bind name_connect };
-    class udp_socket { create connect bind };
-    class netlink_route_socket { create bind getattr write read nlmsg_read };
-    class process { fork setpgid };
-    class capability { net_admin chown dac_override setgid setuid };
 }
 
 type amazon_cloudwatch_agent_t;
 type amazon_cloudwatch_agent_exec_t;
 init_daemon_domain(amazon_cloudwatch_agent_t, amazon_cloudwatch_agent_exec_t)
 
-# Allow the agent to access its own resources
-allow amazon_cloudwatch_agent_t self:process { fork setpgid };
-allow amazon_cloudwatch_agent_t self:fifo_file rw_fifo_file_perms;
-allow amazon_cloudwatch_agent_t self:unix_stream_socket create_stream_socket_perms;
+# File permissions
+allow amazon_cloudwatch_agent_t file_type:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t file_type:file { read getattr open };
+allow amazon_cloudwatch_agent_t file_type:lnk_file { read getattr };
 
 # Network permissions
 allow amazon_cloudwatch_agent_t self:tcp_socket create_stream_socket_perms;
@@ -41,23 +35,29 @@ allow amazon_cloudwatch_agent_t unreserved_port_t:udp_socket name_bind;
 allow amazon_cloudwatch_agent_t node_t:tcp_socket node_bind;
 allow amazon_cloudwatch_agent_t node_t:udp_socket node_bind;
 
-# File permissions
-allow amazon_cloudwatch_agent_t file_type:dir { read getattr open search };
-allow amazon_cloudwatch_agent_t file_type:file { read getattr open };
-allow amazon_cloudwatch_agent_t file_type:lnk_file { read getattr };
+# Process permissions
+allow amazon_cloudwatch_agent_t self:process { fork setpgid signal_perms siginh noatsecure rlimitinh };
 
-# Specific permissions
+# Capability permissions
+allow amazon_cloudwatch_agent_t self:capability { net_admin chown dac_override setgid setuid };
+
+# Specific file permissions
 allow amazon_cloudwatch_agent_t var_log_t:dir { add_name write remove_name };
 allow amazon_cloudwatch_agent_t var_log_t:file { append open setattr create write unlink };
 allow amazon_cloudwatch_agent_t proc_t:file { read getattr open };
 allow amazon_cloudwatch_agent_t sysfs_t:file { read getattr open };
 allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file { getattr open read };
+allow amazon_cloudwatch_agent_t tmp_t:dir { write add_name remove_name };
+allow amazon_cloudwatch_agent_t tmp_t:file { create open read write unlink };
+
+# Allow reading configuration files
+allow amazon_cloudwatch_agent_t etc_t:file { read getattr open };
+
+# Allow access to tty
+allow amazon_cloudwatch_agent_t devpts_t:chr_file { read write };
 
 # Network related
 allow amazon_cloudwatch_agent_t self:netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
-
-# Capabilities
-allow amazon_cloudwatch_agent_t self:capability { net_admin chown dac_override setgid setuid };
 
 # Allow DNS resolution
 sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
