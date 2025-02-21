@@ -108,4 +108,4 @@ files_getattr_all_dirs(amazon_cloudwatch_agent_t)
 # Allow the agent to get disk information
 storage_raw_read_fixed_disk(amazon_cloudwatch_agent_t)
 
-deny amazon_cloudwatch_agent_t shadow_t:file { getattr read write open };
+neverallow amazon_cloudwatch_agent_t shadow_t:file { getattr read write open };
