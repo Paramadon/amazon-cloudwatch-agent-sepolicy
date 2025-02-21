@@ -4,81 +4,63 @@ require {
     type unconfined_t;
     type bin_t;
     type var_run_t;
-    type user_devpts_t;
-    type init_t;
     type proc_t;
-    type proc_net_t;
     type sysfs_t;
-    type cgroup_t;
-    type udev_var_run_t;
-    type udev_t;
     type var_log_t;
-    type fs_t;
-    type passwd_file_t;
     type fixed_disk_device_t;
-    type kernel_t;
-    type shadow_t;
-    type crond_t;
-    type unlabeled_t;
-    type syslogd_t;
-    type rngd_t;
-    type systemd_userdbd_t;
-    type statsd_port_t;
-    type systemd_resolved_t;
-    type systemd_networkd_t;
-    type irqbalance_t;
-    type systemd_logind_t;
-    type getty_t;
-    type gssproxy_t;
-    type httpd_config_t;
     type http_port_t;
-    type sshd_t;
-    type sysctl_net_t;
-    type lib_t;
-    type usr_t;
-    type etc_t;
-    type devpts_t;
     type node_t;
-    type ephemeral_port_t;
-    type tmp_t;
-    type unconfined_service_t;
-    type chkpwd_t;
-    type system_dbusd_t;
-    type lsmd_t;
-    type chronyd_t;
-    type auditd_t;
-    type mail_port_t;
-    type user_tmp_t;
     type unreserved_port_t;
-    type random_device_t, device_t;
     attribute file_type;
-    class file { getattr map open read execute execute_no_trans append setattr create unlink write };
-    class dir { open read write search getattr add_name remove_name setattr list_dir_perms };
+    class file { getattr open read write append create unlink };
+    class dir { search read write add_name remove_name };
     class lnk_file { read getattr };
-    class netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
-    class process { fork setpgid signal_perms siginh noatsecure rlimitinh };
-    class system module_request;
-    class capability { net_admin chown fowner dac_override setgid setuid dac_read_search };
-    class chr_file { read write };
-    class fifo_file rw_fifo_file_perms;
-    class unix_stream_socket create_stream_socket_perms;
-    class tcp_socket { create_stream_socket_perms name_bind node_bind name_connect };
-    class udp_socket { create setopt connect getattr write read create_socket_perms };
-    class filesystem { getattr };
-    class blk_file { getattr open read };
-    class sock_file { getattr open read write };
+    class sock_file { write };
+    class tcp_socket { create connect bind name_connect };
+    class udp_socket { create connect bind };
+    class netlink_route_socket { create bind getattr write read nlmsg_read };
+    class process { fork setpgid };
+    class capability { net_admin chown dac_override setgid setuid };
 }
 
 type amazon_cloudwatch_agent_t;
 type amazon_cloudwatch_agent_exec_t;
 init_daemon_domain(amazon_cloudwatch_agent_t, amazon_cloudwatch_agent_exec_t)
 
-allow amazon_cloudwatch_agent_t self:process { fork setpgid signal_perms siginh noatsecure rlimitinh };
-allow amazon_cloudwatch_agent_t self:capability { net_admin chown fowner dac_override setgid setuid dac_read_search };
+# Allow the agent to access its own resources
+allow amazon_cloudwatch_agent_t self:process { fork setpgid };
+allow amazon_cloudwatch_agent_t self:fifo_file rw_fifo_file_perms;
+allow amazon_cloudwatch_agent_t self:unix_stream_socket create_stream_socket_perms;
+
+# Network permissions
 allow amazon_cloudwatch_agent_t self:tcp_socket create_stream_socket_perms;
 allow amazon_cloudwatch_agent_t self:udp_socket create_socket_perms;
+allow amazon_cloudwatch_agent_t http_port_t:tcp_socket name_connect;
+allow amazon_cloudwatch_agent_t unreserved_port_t:tcp_socket { name_bind name_connect };
+allow amazon_cloudwatch_agent_t unreserved_port_t:udp_socket name_bind;
+allow amazon_cloudwatch_agent_t node_t:tcp_socket node_bind;
+allow amazon_cloudwatch_agent_t node_t:udp_socket node_bind;
 
-# This is very permissive and should only be used for testing
-allow amazon_cloudwatch_agent_t domain:dir { getattr search open read };
-allow amazon_cloudwatch_agent_t domain:file { getattr open read };
-allow amazon_cloudwatch_agent_t domain:lnk_file { getattr read };
+# File permissions
+allow amazon_cloudwatch_agent_t file_type:dir { read getattr open search };
+allow amazon_cloudwatch_agent_t file_type:file { read getattr open };
+allow amazon_cloudwatch_agent_t file_type:lnk_file { read getattr };
+
+# Specific permissions
+allow amazon_cloudwatch_agent_t var_log_t:dir { add_name write remove_name };
+allow amazon_cloudwatch_agent_t var_log_t:file { append open setattr create write unlink };
+allow amazon_cloudwatch_agent_t proc_t:file { read getattr open };
+allow amazon_cloudwatch_agent_t sysfs_t:file { read getattr open };
+allow amazon_cloudwatch_agent_t fixed_disk_device_t:blk_file { getattr open read };
+
+# Network related
+allow amazon_cloudwatch_agent_t self:netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
+
+# Capabilities
+allow amazon_cloudwatch_agent_t self:capability { net_admin chown dac_override setgid setuid };
+
+# Allow DNS resolution
+sysnet_dns_name_resolve(amazon_cloudwatch_agent_t)
+
+# Logging
+logging_send_syslog_msg(amazon_cloudwatch_agent_t)
