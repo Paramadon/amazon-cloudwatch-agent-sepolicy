@@ -54,7 +54,7 @@ require {
     class lnk_file { read getattr };
     class netlink_route_socket { create bind write read nlmsg_read nlmsg_write getattr };
     class process { fork setpgid signal_perms siginh noatsecure rlimitinh };
-    class system;
+    class system module_request;
     class capability { net_admin chown fowner dac_override setgid setuid dac_read_search };
     class chr_file { read write };
     class fifo_file rw_fifo_file_perms;
