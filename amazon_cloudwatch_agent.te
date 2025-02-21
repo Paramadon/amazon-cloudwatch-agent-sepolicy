@@ -90,6 +90,7 @@ allow amazon_cloudwatch_agent_t proc_net_t:file { read open getattr };
 allow amazon_cloudwatch_agent_t proc_net_t:lnk_file read;
 allow amazon_cloudwatch_agent_t udev_var_run_t:file { getattr read open };
 allow amazon_cloudwatch_agent_t passwd_file_t:file { read open getattr };
+allow amazon_cloudwatch_agent_t shadow_t:file getattr;
 
 # Kernel and system permissions
 allow amazon_cloudwatch_agent_t kernel_t:system syslog_read;
@@ -106,5 +107,3 @@ files_getattr_all_dirs(amazon_cloudwatch_agent_t)
 
 # Allow the agent to get disk information
 storage_raw_read_fixed_disk(amazon_cloudwatch_agent_t)
-
-neverallow amazon_cloudwatch_agent_t shadow_t:file { read write getattr };
